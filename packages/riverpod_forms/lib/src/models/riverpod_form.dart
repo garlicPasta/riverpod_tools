@@ -19,13 +19,13 @@ abstract class RiverpodForm extends Iterable<FormValueProxy<dynamic, dynamic>> {
   }
 }
 
-final class FormState<MODEL extends RiverpodForm>(
+final class RiverpodFormState<MODEL extends RiverpodForm>(
   final MODEL model,
   final bool isValid,
 );
 
 class FormNotifier<MODEL extends RiverpodForm>
-    extends Notifier<FormState<MODEL>> {
+    extends Notifier<RiverpodFormState<MODEL>> {
   MODEL model;
   final MODEL initialModel;
 
@@ -40,9 +40,12 @@ class FormNotifier<MODEL extends RiverpodForm>
   }
 
   @override
-  FormState<MODEL> build() {
+  RiverpodFormState<MODEL> build() {
     final values = model.map((config) => config.watch(ref)).toList();
 
-    return FormState<MODEL>(model, values.every((value) => value.isValid));
+    return RiverpodFormState<MODEL>(
+      model,
+      values.every((value) => value.isValid),
+    );
   }
 }

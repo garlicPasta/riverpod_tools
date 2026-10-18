@@ -5,8 +5,10 @@ import 'package:riverpod_forms/src/models/riverpod_form.dart';
 
 class RiverpodFormView<FORM extends RiverpodForm>
     extends ConsumerStatefulWidget {
-  final NotifierProvider<rf.FormNotifier<FORM>, rf.FormState<FORM>> form;
-  final Widget Function(BuildContext context, rf.FormState<FORM> state) builder;
+  final NotifierProvider<rf.FormNotifier<FORM>, rf.RiverpodFormState<FORM>>
+  form;
+  final Widget Function(BuildContext context, rf.RiverpodFormState<FORM> state)
+  builder;
 
   const RiverpodFormView({
     super.key,

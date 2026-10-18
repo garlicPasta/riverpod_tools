@@ -61,15 +61,17 @@ class _RiverpodTextState<E> extends State<_RiverpodText<E>> {
     controller: controller,
     onChanged: widget.setValue,
     decoration: InputDecoration(
-      errorText: switch (widget.state.error) {
-        ValidationInProgress<E>() => null,
-        ValidationSuccess<E>() => null,
-        ValidationFailed<E>(:final failure) => switch (failure) {
-          ValidationFailure<E>(:final error) =>
-            widget.errorMapping?.call(error) ?? '',
-          ValidationException<E>() => 'Validation failed',
-        },
-      },
+      errorText: widget.state.isDirty
+          ? switch (widget.state.error) {
+              ValidationInProgress<E>() => null,
+              ValidationSuccess<E>() => null,
+              ValidationFailed<E>(:final failure) => switch (failure) {
+                ValidationFailure<E>(:final error) =>
+                  widget.errorMapping?.call(error) ?? '',
+                ValidationException<E>() => 'Validation failed',
+              },
+            }
+          : null,
     ),
   );
 }

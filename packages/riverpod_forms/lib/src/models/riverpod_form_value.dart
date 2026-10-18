@@ -2,6 +2,7 @@ part of 'riverpod_form.dart';
 
 class FormSingleValueState<VALUE, ERROR>({
   required final bool isDirty,
+
   final ValidationResult<ERROR> error = const ValidationSuccess(),
   final VALUE? value,
   final AsyncValue<List<VALUE>>? values,
@@ -127,6 +128,11 @@ class _FormValue<VALUE, ERROR>
       isDirty = true;
       ref.invalidateSelf();
     });
+  }
+
+  void validate() {
+    isDirty = true;
+    ref.invalidateSelf();
   }
 
   @override

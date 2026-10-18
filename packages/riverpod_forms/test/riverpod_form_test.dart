@@ -38,12 +38,12 @@ final class NewUserFormModel extends RiverpodForm {
 void main() {
   final NotifierProvider<
     FormNotifier<NewUserFormModel>,
-    FormState<NewUserFormModel>
+    RiverpodFormState<NewUserFormModel>
   >
   newUserFormProvider =
       NotifierProvider<
         FormNotifier<NewUserFormModel>,
-        FormState<NewUserFormModel>
+        RiverpodFormState<NewUserFormModel>
       >(() => FormNotifier.make(NewUserFormModel()));
 
   group('FormNotifier', () {
@@ -56,14 +56,14 @@ void main() {
                   void,
                   NotifierProvider<
                     FormNotifier<NewUserFormModel>,
-                    FormState<NewUserFormModel>
+                    RiverpodFormState<NewUserFormModel>
                   >
                 >.read(
                   setup: (_, _) {},
                   provider: (_, _) => newUserFormProvider,
                   overrides: (_, _) => [],
                   emits: (_, _) => [
-                    isA<FormState<NewUserFormModel>>().having(
+                    isA<RiverpodFormState<NewUserFormModel>>().having(
                       (s) => s.isValid,
                       'isValid',
                       false,
@@ -83,7 +83,7 @@ void main() {
                   void,
                   NotifierProvider<
                     FormNotifier<NewUserFormModel>,
-                    FormState<NewUserFormModel>
+                    RiverpodFormState<NewUserFormModel>
                   >
                 >(
                   setup: (_, _) {},
@@ -97,12 +97,12 @@ void main() {
                     notifier.model.password.setValue('password123');
                   },
                   emits: (_, _) => [
-                    isA<FormState<NewUserFormModel>>().having(
+                    isA<RiverpodFormState<NewUserFormModel>>().having(
                       (s) => s.isValid,
                       'initial isValid',
                       false,
                     ),
-                    isA<FormState<NewUserFormModel>>().having(
+                    isA<RiverpodFormState<NewUserFormModel>>().having(
                       (s) => s.isValid,
                       'isValid after updates',
                       true,

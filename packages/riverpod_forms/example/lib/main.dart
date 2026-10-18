@@ -1,13 +1,9 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide FormState;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:riverpod_forms/riverpod_forms.dart' as rf;
 import 'package:riverpod_forms/riverpod_forms.dart';
 
 final emailField =
-    rf.FormSingleValueProxy<
-      String,
-      CombinedValidator2<String, IsRequired, RegexMismatch>
-    >(
+    makeTextField<CombinedValidator2<String, IsRequired, RegexMismatch>>(
       validator: makeValidator2(
         makeIsRequiredValidator<String>(),
         makeRegexValidator(
@@ -17,33 +13,21 @@ final emailField =
     );
 
 final passwordField0 =
-    rf.FormSingleValueProxy<
-      String,
-      CombinedValidator2<String, IsRequired, MinLength>
-    >(
+    makeTextField<CombinedValidator2<String, IsRequired, MinLength>>(
       validator: makeValidator2(
         makeIsRequiredValidator<String>(),
         makeMinLengthValidator(6),
       ),
     );
 
-final passwordField1 =
-    rf.FormSingleValueProxy<
-      String,
-      CombinedValidator2<String, IsRequired, String>
-    >(
-      validator: makeValidator2(makeIsRequiredValidator<String>(), (
-        ref,
-        value,
-      ) {
-        var other = passwordField0.watchValue(ref);
-        return AsyncValue.data(
-          other == value ? null : 'Passwords do not match',
-        );
-      }),
-    );
+final passwordField1 = makeTextField(
+  validator: makeValidator2(
+    makeIsRequiredValidator<String>(),
+    makeIsEqual(passwordField0),
+  ),
+);
 
-final rolesSelect = rf.FormSingleValueProxy<Role, IsRequired>(
+final rolesSelect = FormSingleValueProxy<Role, IsRequired>(
   values: (_) => AsyncData(Role.values),
   validator: makeIsRequiredValidator<Role>(),
 );
@@ -52,23 +36,23 @@ void main() {
   runApp(const ProviderScope(child: ExampleApp()));
 }
 
-final NotifierProvider<rf.FormNotifier<SignUpForm>, rf.FormState<SignUpForm>>
+final NotifierProvider<FormNotifier<SignUpForm>, RiverpodFormState<SignUpForm>>
 signUpFormProvider =
-    NotifierProvider<rf.FormNotifier<SignUpForm>, rf.FormState<SignUpForm>>(
-      () => rf.FormNotifier.make(SignUpForm()),
+    NotifierProvider<FormNotifier<SignUpForm>, RiverpodFormState<SignUpForm>>(
+      () => FormNotifier.make(SignUpForm()),
     );
 
 enum Role { admin, user, guest }
 
-class SignUpForm extends rf.RiverpodForm {
+class SignUpForm extends RiverpodForm {
   final email = emailField;
   final password = passwordField0;
   final confirmPassword = passwordField1;
   final roles = rolesSelect;
 
   @override
-  Iterator<rf.FormValueProxy<dynamic, dynamic>> get iterator =>
-      <rf.FormValueProxy<dynamic, dynamic>>[
+  Iterator<FormValueProxy<dynamic, dynamic>> get iterator =>
+      <FormValueProxy<dynamic, dynamic>>[
         email,
         password,
         confirmPassword,
@@ -124,13 +108,13 @@ class SignUpScreen extends ConsumerWidget {
             ),
             const SizedBox(height: 12),
             RiverpodFormTextField<
-              CombinedValidator2<String, IsRequired, String>
+              CombinedValidator2<String, IsRequired, IsEqual>
             >(
               valueProxy: state.model.confirmPassword,
               errorMapping: (error) => switch (error) {
-                Validator0Failed<String, IsRequired, String> _ =>
+                Validator0Failed<String, IsRequired, IsEqual> _ =>
                   'Password is required',
-                Validator1Failed<String, IsRequired, String> _ =>
+                Validator1Failed<String, IsRequired, IsEqual> _ =>
                   'Passwords must match',
               },
             ),
