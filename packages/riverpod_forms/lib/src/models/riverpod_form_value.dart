@@ -17,33 +17,22 @@ sealed class FormValueProxy<VALUE, ERROR>({this.validator, this.initial}) {
   AsyncValue<dynamic> validateDynamic(Ref ref, dynamic value) =>
       validator?.call(ref, value as VALUE?) ?? const AsyncData(null);
 
-  FormSingleValueState<VALUE, ERROR> watch(Ref ref) {
-    final FormSingleValueState<dynamic, dynamic> state = ref.watch(
-      formValueProvider((key, this)),
-    );
-    return FormSingleValueState<VALUE, ERROR>(
-      isDirty: state.isDirty,
-      error: state.error.as<ERROR>(),
-      value: state.value as VALUE?,
-      values: state.values as AsyncValue<List<VALUE>>?,
-    );
+  NotifierProvider<FormValue, FormSingleValueState<dynamic, dynamic>>
+  get _provider => formValueProvider((key, this));
+
+  FormSingleValueState<VALUE, ERROR> watch(Ref ref) =>
+      ref.watch(_provider).as<VALUE, ERROR>();
+
+  void validate(Ref ref) {
+    ref.read(_provider.notifier).validate();
   }
 
   VALUE? watchValue(Ref ref) =>
       ref.watch(formValueProvider((key, this)).select((s) => s.value))
           as VALUE?;
 
-  FormSingleValueState<VALUE, ERROR> watchW(WidgetRef ref) {
-    final FormSingleValueState<dynamic, dynamic> state = ref.watch(
-      formValueProvider((key, this)),
-    );
-    return FormSingleValueState<VALUE, ERROR>(
-      isDirty: state.isDirty,
-      error: state.error.as<ERROR>(),
-      value: state.value as VALUE?,
-      values: state.values as AsyncValue<List<VALUE>>?,
-    );
-  }
+  FormSingleValueState<VALUE, ERROR> watchW(WidgetRef ref) =>
+      ref.watch(formValueProvider((key, this))).as<VALUE, ERROR>();
 
   FormSingleValueState<VALUE, ERROR> read(Ref ref) {
     final FormSingleValueState<dynamic, dynamic> state = ref.read(

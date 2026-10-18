@@ -4,31 +4,34 @@ import 'package:riverpod_forms/src/models/riverpod_form_value_state.dart';
 
 final formValueProvider =
     NotifierProvider.family<
-      _FormValue<dynamic, dynamic>,
+      FormValue<dynamic, dynamic>,
       FormSingleValueState<dynamic, dynamic>,
       FormValueProviderArgs
-    >((args) => _FormValue<dynamic, dynamic>(args.$1, args.$2));
+    >((args) => FormValue<dynamic, dynamic>(args.$1, args.$2));
 
-class _FormValue<VALUE, ERROR>
+final class FormValue<VALUE, ERROR>
     extends Notifier<FormSingleValueState<VALUE, ERROR>> {
   final String key;
   final FormValueProxy<VALUE, ERROR> config;
-  late final AsyncDebouncer debouncer;
+  late final AsyncDebouncer _debouncer;
   VALUE? value;
   bool isDirty = false;
 
-  _FormValue(this.key, this.config) : value = config.initial {
+  FormValue(this.key, this.config) : value = config.initial {
     config.setValue = setValue;
-    debouncer = AsyncDebouncer(Duration(milliseconds: 80));
+    _debouncer = AsyncDebouncer(Duration(milliseconds: 80));
   }
 
   void setValue(VALUE? value) {
-    debouncer.run(() async {
+    _debouncer.run(() async {
       this.value = value;
       isDirty = true;
       ref.invalidateSelf();
     });
   }
+
+    AsyncValue<dynamic> _validateDynamic(Ref ref, dynamic value) =>
+      config.validateDynamic(ref, value);
 
   void validate() {
     isDirty = true;
@@ -41,7 +44,7 @@ class _FormValue<VALUE, ERROR>
       FormSingleValueState<VALUE, ERROR>(
         isDirty: isDirty,
         error: ValidationState.fromAsyncValue<ERROR>(
-          config.validateDynamic(ref, value) as AsyncValue<ERROR?>,
+          _validateDynamic(ref, value) as AsyncValue<ERROR?>,
         ),
         value: value,
         values: values?.call(ref),

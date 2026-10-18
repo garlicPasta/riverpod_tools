@@ -32,8 +32,11 @@ abstract class RiverpodForm<RESULT>
     return Map.fromEntries(entries.nonNulls);
   }
 
+  void validate(WidgetRef ref) =>
+      forEach((field) => field.validator);
+
   @nonVirtual
-  RESULT? resultWhenValid(WidgetRef ref) =>
+  RESULT? validateThenGetResult(WidgetRef ref) =>
       whenNotNull(_validSnapshot(ref), then: getResult);
 }
 

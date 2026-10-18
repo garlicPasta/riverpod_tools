@@ -16,6 +16,14 @@ class FormSingleValueState<VALUE, ERROR>({
   final AsyncValue<List<VALUE>>? values,
 }) {
   bool get isValid => error is ValidationSuccess<ERROR>;
+
+  FormSingleValueState<T, E> as<T, E>() => FormSingleValueState<T, E>(
+    isDirty: isDirty,
+    error: error.as<E>(),
+    value: value as T?,
+    values: values as AsyncValue<List<T>>?,
+  );
+
   Result<VALUE, ERROR> get result => isValid
       ? Valid<VALUE, ERROR>(value as VALUE)
       : Invalid<VALUE, ERROR>(error);

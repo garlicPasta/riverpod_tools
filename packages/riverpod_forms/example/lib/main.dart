@@ -156,7 +156,7 @@ class SignUpScreen extends ConsumerWidget {
               ),
               FilledButton(
                 onPressed: () {
-                  final result = state.model.resultWhenValid(ref);
+                  final result = state.model.validateThenGetResult(ref);
                   final String message = result != null
                       ? 'Ready to submit for ${result.email}'
                       : 'Form is invalid';
