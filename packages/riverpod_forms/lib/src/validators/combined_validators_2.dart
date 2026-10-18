@@ -1,7 +1,7 @@
 import 'package:async_value_tools/async_value_tools.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:riverpod_forms/models/riverpod_form.dart';
-import 'package:riverpod_forms/utils/functional_helpers.dart';
+import 'package:riverpod_forms/src/models/riverpod_form.dart';
+import 'package:riverpod_forms/src/utils/functional_helpers.dart';
 
 sealed class CombinedValidator2<V, E0, E1> {}
 

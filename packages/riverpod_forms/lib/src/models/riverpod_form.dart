@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:riverpod_forms/models/validation_result.dart';
-import 'package:riverpod_forms/utils/async_debouncer.dart';
+import 'package:riverpod_forms/src/models/validation_result.dart';
+import 'package:riverpod_forms/src/utils/async_debouncer.dart';
 import 'package:uuid/uuid.dart';
 
 part 'riverpod_form_value.dart';

@@ -1,9 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:riverpod_forms/models/riverpod_form.dart';
-import 'package:riverpod_forms/validators/combined_validators_2.dart';
-import 'package:riverpod_forms/validators/is_required_validator.dart';
-import 'package:riverpod_forms/validators/string_validators.dart';
+import 'package:riverpod_forms/src/models/riverpod_form.dart';
+import 'package:riverpod_forms/src/validators/combined_validators_2.dart';
+import 'package:riverpod_forms/src/validators/is_required_validator.dart';
+import 'package:riverpod_forms/src/validators/string_validators.dart';
 
 import 'provider_tester.dart';
 

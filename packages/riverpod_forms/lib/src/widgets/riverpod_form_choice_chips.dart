@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:riverpod_forms/models/riverpod_form.dart';
-import 'package:riverpod_forms/utils/functional_helpers.dart';
-import 'package:riverpod_forms/widgets/riverpod_form_field_builder.dart';
+import 'package:riverpod_forms/src/models/riverpod_form.dart';
+import 'package:riverpod_forms/src/utils/functional_helpers.dart';
+import 'package:riverpod_forms/src/widgets/riverpod_form_field_builder.dart';
 
 class RiverpodFormChoiceChips<VALUE, E> extends StatelessWidget {
   final FormValueProxy<VALUE, E> valueProxy;

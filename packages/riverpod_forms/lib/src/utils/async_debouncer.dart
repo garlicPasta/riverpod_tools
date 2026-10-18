@@ -1,7 +1,7 @@
 import 'dart:developer' show log;
 
 import 'package:async/async.dart';
-import 'package:riverpod_forms/typedefs.dart';
+import 'package:riverpod_forms/src/typedefs.dart';
 
 class AsyncDebouncer<T> {
   final Duration? _delay;

@@ -1,12 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:riverpod_forms/models/riverpod_form.dart' as rf;
-import 'package:riverpod_forms/validators/combined_validators_2.dart';
-import 'package:riverpod_forms/validators/is_required_validator.dart';
-import 'package:riverpod_forms/validators/string_validators.dart';
-import 'package:riverpod_forms/widgets/riverpod_form_choice_chips.dart';
-import 'package:riverpod_forms/widgets/riverpod_form_text_field.dart';
-import 'package:riverpod_forms/widgets/riverpod_form_view.dart';
+import 'package:riverpod_forms/riverpod_forms.dart';
+import 'package:riverpod_forms/riverpod_forms.dart' as rf;
 
 void main() {
   runApp(const ProviderScope(child: ExampleApp()));

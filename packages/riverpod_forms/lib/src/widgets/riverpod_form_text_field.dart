@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:riverpod_forms/models/riverpod_form.dart';
-import 'package:riverpod_forms/models/validation_result.dart';
-import 'package:riverpod_forms/widgets/riverpod_form_field_builder.dart';
+import 'package:riverpod_forms/src/models/riverpod_form.dart';
+import 'package:riverpod_forms/src/models/validation_result.dart';
+import 'package:riverpod_forms/src/widgets/riverpod_form_field_builder.dart';
 
 class RiverpodFormTextField<E> extends StatelessWidget {
   final FormValueProxy<String, E> valueProxy;

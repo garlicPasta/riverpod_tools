@@ -12,11 +12,12 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  uuid: ^4.6.0
   collection: ^1.19.1
   flutter_riverpod: ">=3.3.0 <3.5.0"
-  uuid: ^4.6.0
   async: ^2.13.1
-  async_value_tools: ^0.1.0
+  async_value_tools:
+    path: ../async_value_tools
 
 dev_dependencies:
   flutter_test:

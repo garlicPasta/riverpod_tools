@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:riverpod_forms/models/riverpod_form.dart' as rf;
-import 'package:riverpod_forms/models/riverpod_form.dart';
+import 'package:riverpod_forms/src/models/riverpod_form.dart' as rf;
+import 'package:riverpod_forms/src/models/riverpod_form.dart';
 
 class RiverpodFormView<FORM extends RiverpodForm>
     extends ConsumerStatefulWidget {

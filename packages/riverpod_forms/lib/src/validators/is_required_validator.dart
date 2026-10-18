@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:riverpod_forms/models/riverpod_form.dart';
+
+import '../../riverpod_forms.dart';
 
 final class IsRequired {}
 
