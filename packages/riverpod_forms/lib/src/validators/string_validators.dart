@@ -20,3 +20,10 @@ FormValueValidator<String, RegexMismatch> makeRegexValidator(RegExp regex) =>
       }
       return AsyncValue.data(null);
     };
+
+final RegExp _emailRegex = RegExp(
+  r'^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$',
+);
+
+FormValueValidator<String, RegexMismatch> makeIsValidEmailValidator() =>
+    makeRegexValidator(_emailRegex);

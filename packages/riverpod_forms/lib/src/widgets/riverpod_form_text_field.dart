@@ -6,11 +6,13 @@ import 'package:riverpod_forms/src/widgets/riverpod_form_field_builder.dart';
 class RiverpodFormTextField<E> extends StatelessWidget {
   final FormValueProxy<String, E> valueProxy;
   final String Function(E)? errorMapping;
+  final InputDecoration? decoration;
 
   const RiverpodFormTextField({
     super.key,
     required this.valueProxy,
     this.errorMapping,
+    this.decoration,
   });
 
   @override
@@ -20,18 +22,21 @@ class RiverpodFormTextField<E> extends StatelessWidget {
       state: state,
       setValue: setValue,
       errorMapping: errorMapping,
+      decoration: decoration,
     ),
   );
 }
 
 class _RiverpodText<E> extends RiverpodFormFieldHandler<String, E> {
   final String Function(E)? errorMapping;
+  final InputDecoration? decoration;
 
   const _RiverpodText({
     super.key,
     required super.state,
     required super.setValue,
     this.errorMapping,
+    this.decoration,
   });
 
   @override
@@ -60,7 +65,13 @@ class _RiverpodTextState<E> extends State<_RiverpodText<E>> {
   Widget build(BuildContext context) => TextField(
     controller: controller,
     onChanged: widget.setValue,
-    decoration: InputDecoration(
+    decoration: (widget.decoration ?? InputDecoration()).copyWith(
+      suffix: switch (widget.state.error) {
+        ValidationInProgress<E>() => const CircularProgressIndicator(
+          constraints: BoxConstraints.tightFor(width: 16, height: 16),
+        ),
+        _ => null,
+      },
       errorText: widget.state.isDirty
           ? switch (widget.state.error) {
               ValidationInProgress<E>() => null,

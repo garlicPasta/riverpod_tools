@@ -4,8 +4,8 @@ import '../../riverpod_forms.dart';
 
 final class IsRequired {}
 
-FormValueValidator<T, IsRequired> makeIsRequiredValidator<T>() =>
-    (Ref ref, T? value) {
+FormValueValidator<Object, IsRequired> makeIsRequiredValidator() =>
+    (Ref ref, Object? value) {
       if (value == null || (value is String && value.isEmpty)) {
         return AsyncValue.data(IsRequired());
       }

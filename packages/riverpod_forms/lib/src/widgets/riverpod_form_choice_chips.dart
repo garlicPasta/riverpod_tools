@@ -62,6 +62,7 @@ class _RiverpodChoiceChipsState<VALUE, E>
       mainAxisSize: MainAxisSize.min,
       children: [
         Wrap(
+          spacing: 4,
           children: values.map((v) {
             final selected = widget.state.value == v;
             return ChoiceChip(

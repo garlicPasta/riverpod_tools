@@ -15,12 +15,12 @@ final class NewUserFormModel extends RiverpodForm {
             CombinedValidator2<String, IsRequired, MinLength>
           >(
             validator: makeValidator2(
-              makeIsRequiredValidator<String>(),
+              makeIsRequiredValidator(),
               makeMinLengthValidator(3),
             ),
           ),
       password = FormSingleValueProxy<String, IsRequired>(
-        validator: makeIsRequiredValidator<String>(),
+        validator: makeIsRequiredValidator(),
       );
 
   final FormValueProxy<

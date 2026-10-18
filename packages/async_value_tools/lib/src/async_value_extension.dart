@@ -8,6 +8,11 @@ extension AsyncValueExtension<T> on AsyncValue<T> {
   AsyncValue<(T, R)> and<R>(AsyncValue<R> other) =>
       AsyncValueHelper.merge2(this, other, (a, b) => (a, b));
 
+  AsyncValue<(T, R0, R1)> and2<R0, R1>(
+    AsyncValue<R0> other0,
+    AsyncValue<R1> other1,
+  ) => AsyncValueHelper.merge3(this, other0, other1, (a, b, c) => (a, b, c));
+
   AsyncValue<S> combine<R, S>(AsyncValue<R> other, S Function(T, R) combiner) =>
       AsyncValueHelper.merge2(this, other, (a, b) => combiner(a, b));
 
