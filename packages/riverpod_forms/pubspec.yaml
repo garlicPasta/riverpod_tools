@@ -1,0 +1,24 @@
+name: riverpod_forms
+description: Shared Riverpod form primitives for Clocklio
+
+publish_to: none
+
+version: 0.1.0
+resolution: workspace
+
+environment:
+  sdk: ">=3.13.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  collection: ^1.19.1
+  flutter_riverpod: ">=3.3.0 <3.5.0"
+  uuid: ^4.6.0
+  async: ^2.13.1
+  async_value_tools: ^0.1.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  rxdart: ^0.28.0

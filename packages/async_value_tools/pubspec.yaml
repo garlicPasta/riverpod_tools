@@ -1,0 +1,16 @@
+name: async_value_tools
+description: Utilities and extensions for Riverpod AsyncValue.
+
+publish_to: none
+
+version: 0.1.0
+resolution: workspace
+
+environment:
+  sdk: ">=3.13.0 <4.0.0"
+
+dependencies:
+  riverpod: ">=3.3.0 <3.5.0"
+
+dev_dependencies:
+  test: ^1.26.0

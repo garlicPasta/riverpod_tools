@@ -1,0 +1,6 @@
+analyzer:
+  # Avoid analyzing generated and vendored files under Flutter build outputs.
+  # These are not part of this workspace's source and can crash the server.
+  exclude:
+    - "**/build/**"
+    - "**/.dart_tool/**"
