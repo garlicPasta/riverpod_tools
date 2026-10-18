@@ -26,18 +26,15 @@ typedef FormValueValidator<VALUE, ERROR> = AsyncValue<ERROR?> Function(
   VALUE? value,
 );
 
-sealed class FormValueProxy<VALUE, ERROR>({
-  required this.validator,
-  this.initial,
-}) {
-  final FormValueValidator<VALUE, ERROR> validator;
+sealed class FormValueProxy<VALUE, ERROR>({this.validator, this.initial}) {
+  final FormValueValidator<VALUE, ERROR>? validator;
   final VALUE? initial;
 
   late Function(VALUE? value) setValue;
   final String key = _uuid.v4();
 
   AsyncValue<dynamic> validateDynamic(Ref ref, dynamic value) =>
-      validator(ref, value as VALUE?);
+      validator?.call(ref, value as VALUE?) ?? const AsyncData(null);
 
   FormSingleValueState<VALUE, ERROR> watch(Ref ref) {
     final FormSingleValueState<dynamic, dynamic> state = ref.watch(
@@ -50,6 +47,10 @@ sealed class FormValueProxy<VALUE, ERROR>({
       values: state.values as AsyncValue<List<VALUE>>?,
     );
   }
+
+  VALUE? watchValue(Ref ref) =>
+      ref.watch(formValueProvider((key, this)).select((s) => s.value))
+          as VALUE?;
 
   FormSingleValueState<VALUE, ERROR> watchW(WidgetRef ref) {
     final FormSingleValueState<dynamic, dynamic> state = ref.watch(
@@ -81,7 +82,7 @@ sealed class FormValueProxy<VALUE, ERROR>({
 
 final class FormSingleValueProxy<VALUE, ERROR>
     extends FormValueProxy<VALUE, ERROR> {
-  FormSingleValueProxy({required super.validator, super.initial, this.values});
+  FormSingleValueProxy({super.validator, super.initial, this.values});
 
   final AsyncValue<List<VALUE>> Function(Ref ref)? values;
 }

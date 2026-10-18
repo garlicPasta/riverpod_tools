@@ -6,7 +6,7 @@ final class MinLength(final int length);
 final class RegexMismatch(final RegExp regex);
 
 FormValueValidator<String, MinLength> makeMinLengthValidator(int length) =>
-    (Ref ref, dynamic value) {
+    (Ref ref, String? value) {
       if (value is String && value.length < length) {
         return AsyncValue.data(MinLength(length));
       }
