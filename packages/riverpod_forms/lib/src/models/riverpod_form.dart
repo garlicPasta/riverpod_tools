@@ -1,51 +1,43 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:riverpod_forms/src/models/validation_result.dart';
-import 'package:riverpod_forms/src/utils/async_debouncer.dart';
+import 'package:meta/meta.dart';
+import 'package:riverpod_forms/riverpod_forms.dart';
+import 'package:riverpod_forms/src/models/riverpod_form_value_state.dart';
+import 'package:riverpod_forms/src/providers/form_value_notifier.dart';
 import 'package:uuid/uuid.dart';
 
 part 'riverpod_form_value.dart';
 
-abstract class RiverpodForm extends Iterable<FormValueProxy<dynamic, dynamic>> {
-  Map<String, dynamic>? snapshotWhenValid(Ref ref) {
-    var state = map((v) {
-      FormSingleValueState<dynamic, dynamic> value = v.read(ref);
-      return (value.isValid, v.key, value.value);
+typedef ValidFormSnapshot = Map<String, dynamic>;
+
+abstract class RiverpodForm<RESULT>
+    extends Iterable<FormValueProxy<dynamic, dynamic>> {
+  @protected
+  @visibleForOverriding
+  RESULT getResult(ValidFormSnapshot snapshot);
+
+  RiverpodForm();
+
+  ValidFormSnapshot? _validSnapshot(WidgetRef ref) {
+    var entries = this.map((value) {
+      var s = value.readW(ref);
+      if (s.isValid) {
+        return MapEntry(value.key, s.value);
+      } else {
+        return null;
+      }
     });
-    if (state.every((e) => e.$1)) {
-      return Map.fromEntries(state.map((e) => MapEntry(e.$2, e.$3)));
+    if (entries.any((e) => e == null)) {
+      return null;
     }
-    return null;
+    return Map.fromEntries(entries.nonNulls);
   }
+
+  @nonVirtual
+  RESULT? resultWhenValid(WidgetRef ref) =>
+      whenNotNull(_validSnapshot(ref), then: getResult);
 }
 
 final class RiverpodFormState<MODEL extends RiverpodForm>(
   final MODEL model,
   final bool isValid,
 );
-
-class FormNotifier<MODEL extends RiverpodForm>
-    extends Notifier<RiverpodFormState<MODEL>> {
-  MODEL model;
-  final MODEL initialModel;
-
-  static FormNotifier<M> make<M extends RiverpodForm>(M model) =>
-      FormNotifier<M>(model);
-
-  FormNotifier(this.model) : initialModel = model;
-
-  void reset() {
-    model = initialModel;
-    ref.invalidateSelf();
-  }
-
-  @override
-  RiverpodFormState<MODEL> build() {
-    final values = model.map((config) => config.watch(ref)).toList();
-
-    return RiverpodFormState<MODEL>(
-      model,
-      values.every((value) => value.isValid),
-    );
-  }
-}

@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-sealed class ValidationResult<ERROR> {
-  static ValidationResult<ERROR> fromAsyncValue<ERROR>(
+sealed class ValidationState<ERROR> {
+  static ValidationState<ERROR> fromAsyncValue<ERROR>(
     AsyncValue<ERROR?> asyncValue,
   ) => asyncValue.when(
     skipLoadingOnRefresh: false,
@@ -22,7 +22,7 @@ sealed class ValidationResult<ERROR> {
     ValidationSuccess<ERROR>() => null,
   };
 
-  ValidationResult<T> as<T>() => switch (this) {
+  ValidationState<T> as<T>() => switch (this) {
     ValidationInProgress<ERROR>() => ValidationInProgress<T>(),
     ValidationSuccess<ERROR>() => ValidationSuccess<T>(),
     ValidationFailed<ERROR>(:final failure) => ValidationFailed<T>(
@@ -30,19 +30,19 @@ sealed class ValidationResult<ERROR> {
     ),
   };
 
-  const ValidationResult();
+  const ValidationState();
 }
 
-final class ValidationInProgress<ERROR> extends ValidationResult<ERROR> {
+final class ValidationInProgress<ERROR> extends ValidationState<ERROR> {
   const ValidationInProgress();
 }
 
-final class ValidationSuccess<ERROR> extends ValidationResult<ERROR> {
+final class ValidationSuccess<ERROR> extends ValidationState<ERROR> {
   const ValidationSuccess();
 }
 
 final class ValidationFailed<ERROR>(final ValidationError<ERROR> failure)
-    extends ValidationResult<ERROR> {}
+    extends ValidationState<ERROR> {}
 
 sealed class ValidationError<ERROR> {
   ValidationError<T> as<T>() => switch (this) {

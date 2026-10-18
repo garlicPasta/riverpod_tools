@@ -78,7 +78,15 @@ class _RiverpodChoiceChipsState<VALUE, E>
         ),
         whenNotNull(
           widget.state.error.error,
-          then: (value) => Text(widget.errorMapping?.call(value) ?? ''),
+          then: (value) => Padding(
+            padding: const EdgeInsets.only(top: 8, left: 12, right: 12),
+            child: Text(
+              widget.errorMapping?.call(value) ?? '',
+              style:
+                  Theme.of(context).inputDecorationTheme.errorStyle ??
+                  TextStyle(color: Theme.of(context).colorScheme.error),
+            ),
+          ),
         ),
       ].nonNulls.toList(),
     ),

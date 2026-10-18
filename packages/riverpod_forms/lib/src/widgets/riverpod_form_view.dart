@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:riverpod_forms/src/models/riverpod_form.dart' as rf;
 import 'package:riverpod_forms/src/models/riverpod_form.dart';
+import 'package:riverpod_forms/src/providers/form_notifier.dart';
 
 class RiverpodFormView<FORM extends RiverpodForm>
     extends ConsumerStatefulWidget {
-  final NotifierProvider<rf.FormNotifier<FORM>, rf.RiverpodFormState<FORM>>
-  form;
-  final Widget Function(BuildContext context, rf.RiverpodFormState<FORM> state)
+  final NotifierProvider<FormNotifier<FORM>, RiverpodFormState<FORM>> form;
+  final Widget Function(BuildContext context, RiverpodFormState<FORM> state)
   builder;
 
   const RiverpodFormView({

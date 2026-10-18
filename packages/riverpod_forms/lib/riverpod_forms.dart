@@ -1,7 +1,8 @@
 library riverpod_forms;
 
-export 'src/models/riverpod_form.dart' hide formValueProvider;
+export 'src/models/riverpod_form.dart';
 export 'src/models/validation_result.dart';
+export 'src/providers/form_notifier.dart';
 export 'src/typedefs.dart';
 export 'src/utils/async_debouncer.dart';
 export 'src/utils/functional_helpers.dart';

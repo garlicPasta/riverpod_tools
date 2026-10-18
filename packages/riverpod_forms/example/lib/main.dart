@@ -52,7 +52,13 @@ signUpFormProvider =
 
 enum Role { admin, user, guest }
 
-class SignUpForm extends RiverpodForm {
+class UserFormResult(
+  final String email,
+  final String password,
+  final Role role,
+);
+
+class SignUpForm extends RiverpodForm<UserFormResult> {
   final email = emailField;
   final password = passwordField0;
   final confirmPassword = passwordField1;
@@ -66,6 +72,13 @@ class SignUpForm extends RiverpodForm {
         confirmPassword,
         roles,
       ].iterator;
+
+  @override
+  UserFormResult getResult(snapshot) => UserFormResult(
+    email.getValid(snapshot),
+    password.getValid(snapshot),
+    roles.getValid(snapshot),
+  );
 }
 
 class ExampleApp extends StatelessWidget {
@@ -143,8 +156,9 @@ class SignUpScreen extends ConsumerWidget {
               ),
               FilledButton(
                 onPressed: () {
-                  final String message = state.isValid
-                      ? 'Form is valid and ready to submit'
+                  final result = state.model.resultWhenValid(ref);
+                  final String message = result != null
+                      ? 'Ready to submit for ${result.email}'
                       : 'Form is invalid';
                   ScaffoldMessenger.of(context)
                       .showSnackBar(SnackBar(content: Text(message)));

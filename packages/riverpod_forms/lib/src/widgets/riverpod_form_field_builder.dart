@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_forms/src/models/riverpod_form.dart';
+import 'package:riverpod_forms/src/models/riverpod_form_value_state.dart';
 
 typedef RiverpodFormFieldBuilderCallback<VALUE, ERROR> = Widget Function(
   BuildContext context,

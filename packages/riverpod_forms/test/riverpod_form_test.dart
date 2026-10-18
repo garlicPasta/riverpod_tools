@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:riverpod_forms/src/models/riverpod_form.dart';
+import 'package:riverpod_forms/src/providers/form_notifier.dart';
 import 'package:riverpod_forms/src/validators/combined_validators_2.dart';
 import 'package:riverpod_forms/src/validators/is_required_validator.dart';
 import 'package:riverpod_forms/src/validators/string_validators.dart';
@@ -33,6 +34,12 @@ final class NewUserFormModel extends RiverpodForm {
   @override
   Iterator<FormValueProxy<dynamic, dynamic>> get iterator =>
       <FormValueProxy<dynamic, dynamic>>[email, password].iterator;
+
+  @override
+  getResult(Map<String, dynamic> snapshot) => {
+    'email': email.getValid(snapshot),
+    'password': password.getValid(snapshot),
+  };
 }
 
 void main() {
