@@ -5,6 +5,8 @@ import 'package:riverpod/riverpod.dart';
 import 'async_value_helper.dart';
 
 extension AsyncValueExtension<T> on AsyncValue<T> {
+  AsyncValue<V> as<V>() => whenData((v) => v as V);
+
   AsyncValue<(T, R)> and<R>(AsyncValue<R> other) =>
       AsyncValueHelper.merge2(this, other, (a, b) => (a, b));
 

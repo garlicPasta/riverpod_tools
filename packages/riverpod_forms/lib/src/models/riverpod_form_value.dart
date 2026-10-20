@@ -2,20 +2,22 @@ part of 'riverpod_form.dart';
 
 var _uuid = Uuid();
 
-typedef FormValueValidator<VALUE, ERROR> = AsyncValue<ERROR?> Function(
-  Ref ref,
-  VALUE? value,
+var asFutureProvider = FutureProvider.family(
+  (
+    Ref ref,
+    ({dynamic value, Future<dynamic> Function(dynamic value) validator}) params,
+  ) => params.validator(params.value),
 );
 
 sealed class FormValueProxy<VALUE, ERROR>({this.validator, this.initial}) {
-  final FormValueValidator<VALUE, ERROR>? validator;
+  final Validator<VALUE, ERROR>? validator;
   final VALUE? initial;
 
   late Function(VALUE? value) setValue;
   final String key = _uuid.v4();
 
-  AsyncValue<dynamic> validateDynamic(Ref ref, dynamic value) =>
-      validator?.call(ref, value as VALUE?) ?? const AsyncData(null);
+  AsyncValue<ERROR?> validateDynamic(Ref ref, dynamic val) =>
+      validator?.normalize(ref, val) ?? AsyncData<ERROR?>(null);
 
   NotifierProvider<FormValue, FormSingleValueState<dynamic, dynamic>>
   get _provider => formValueProvider((key, this));

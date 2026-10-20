@@ -1,13 +1,11 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../../riverpod_forms.dart';
+import 'package:riverpod_forms/src/models/validators.dart';
 
 final class IsRequired {}
 
-FormValueValidator<Object, IsRequired> makeIsRequiredValidator() =>
-    (Ref ref, Object? value) {
+SyncValidator<T, IsRequired> makeIsRequiredValidator<T>() =>
+    SyncValidator((T? value) {
       if (value == null || (value is String && value.isEmpty)) {
-        return AsyncValue.data(IsRequired());
+        return IsRequired();
       }
-      return AsyncValue.data(null);
-    };
+      return null;
+    });

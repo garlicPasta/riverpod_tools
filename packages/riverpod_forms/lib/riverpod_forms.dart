@@ -1,14 +1,14 @@
 library riverpod_forms;
 
 export 'src/models/riverpod_form.dart';
+export 'src/models/validators.dart';
 export 'src/models/validation_result.dart';
 export 'src/providers/form_notifier.dart';
 export 'src/typedefs.dart';
 export 'src/utils/async_debouncer.dart';
 export 'src/utils/functional_helpers.dart';
 export 'src/utils/text_field_maker.dart';
-export 'src/validators/combined_validators_2.dart';
-export 'src/validators/combined_validators_3.dart';
+export 'src/validators/combined_validators/combined_validators_2.dart';
 export 'src/validators/is_required_validator.dart';
 export 'src/validators/string_validators.dart';
 export 'src/validators/value_validators.dart';

@@ -1,3 +1,4 @@
+import 'package:async_value_tools/async_value_tools.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_forms/riverpod_forms.dart';
 import 'package:riverpod_forms/src/models/riverpod_form_value_state.dart';
@@ -30,7 +31,7 @@ final class FormValue<VALUE, ERROR>
     });
   }
 
-    AsyncValue<dynamic> _validateDynamic(Ref ref, dynamic value) =>
+  AsyncValue<dynamic> _validateDynamic(Ref ref, dynamic value) =>
       config.validateDynamic(ref, value);
 
   void validate() {
@@ -44,7 +45,7 @@ final class FormValue<VALUE, ERROR>
       FormSingleValueState<VALUE, ERROR>(
         isDirty: isDirty,
         error: ValidationState.fromAsyncValue<ERROR>(
-          _validateDynamic(ref, value) as AsyncValue<ERROR?>,
+          _validateDynamic(ref, value).as<ERROR?>(),
         ),
         value: value,
         values: values?.call(ref),

@@ -1,29 +1,27 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../../riverpod_forms.dart';
+import 'package:riverpod_forms/src/models/validators.dart';
 
 final class MinLength(final int length);
 final class RegexMismatch(final RegExp regex);
 
-FormValueValidator<String, MinLength> makeMinLengthValidator(int length) =>
-    (Ref ref, String? value) {
-      if (value is String && value.length < length) {
-        return AsyncValue.data(MinLength(length));
+SyncValidator<String, MinLength> makeMinLengthValidator(int length) =>
+    SyncValidator((String? value) {
+      if (value == null || value.length < length) {
+        return MinLength(length);
       }
-      return AsyncValue.data(null);
-    };
+      return null;
+    });
 
-FormValueValidator<String, RegexMismatch> makeRegexValidator(RegExp regex) =>
-    (Ref ref, String? value) {
-      if (value != null && !regex.hasMatch(value)) {
-        return AsyncValue.data(RegexMismatch(regex));
+SyncValidator<String, RegexMismatch> makeRegexValidator(RegExp regex) =>
+    SyncValidator((String? value) {
+      if (value == null || !regex.hasMatch(value)) {
+        return RegexMismatch(regex);
       }
-      return AsyncValue.data(null);
-    };
+      return null;
+    });
 
 final RegExp _emailRegex = RegExp(
   r'^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$',
 );
 
-FormValueValidator<String, RegexMismatch> makeIsValidEmailValidator() =>
+SyncValidator<String, RegexMismatch> makeIsValidEmailValidator() =>
     makeRegexValidator(_emailRegex);

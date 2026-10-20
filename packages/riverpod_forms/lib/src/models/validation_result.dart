@@ -9,8 +9,8 @@ sealed class ValidationState<ERROR> {
         ? ValidationSuccess<ERROR>()
         : ValidationFailed<ERROR>(ValidationFailure<ERROR>(error)),
     loading: () => ValidationInProgress<ERROR>(),
-    error: (err, stack) =>
-        ValidationFailed<ERROR>(ValidationException<ERROR>(err, stack)),
+    error: (error, stack) =>
+        ValidationFailed<ERROR>(ValidationException<ERROR>(error, stack)),
   );
 
   ERROR? get error => switch (this) {

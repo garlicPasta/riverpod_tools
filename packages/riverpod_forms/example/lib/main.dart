@@ -10,34 +10,38 @@ var checkIfEmailIsTaken = FutureProvider.family<bool, String>(
 );
 
 final emailField =
-    makeTextField<CombinedValidator3<String, IsRequired, RegexMismatch, bool>>(
-      validator: makeValidator3(
-        makeIsRequiredValidator(),
+    makeTextField<
+      CombinedValidatorResult3<String?, IsRequired, RegexMismatch, bool>
+    >(
+      validator: CombinedValidator3(
+        makeIsRequiredValidator<String>(),
         makeIsValidEmailValidator(),
-        (ref, value) => ref
-            .watch(checkIfEmailIsTaken(value ?? ''))
-            .whenData((isTaken) => isTaken ? true : null),
+        RiverpodValidator(
+          (ref, value) => ref
+              .watch(checkIfEmailIsTaken(value ?? ''))
+              .whenData((isTaken) => isTaken ? true : null),
+        ),
       ),
     );
 
 final passwordField0 =
-    makeTextField<CombinedValidator2<String, IsRequired, MinLength>>(
-      validator: makeValidator2(
-        makeIsRequiredValidator(),
+    makeTextField<CombinedValidatorResult2<String?, IsRequired, MinLength>>(
+      validator: CombinedValidator2(
+        makeIsRequiredValidator<String>(),
         makeMinLengthValidator(6),
       ),
     );
 
 final passwordField1 = makeTextField(
-  validator: makeValidator2(
-    makeIsRequiredValidator(),
+  validator: CombinedValidator2(
+    makeIsRequiredValidator<String>(),
     makeIsEqual(passwordField0),
   ),
 );
 
 final rolesSelect = FormSingleValueProxy<Role, IsRequired>(
   values: (_) => AsyncData(Role.values),
-  validator: makeIsRequiredValidator(),
+  validator: makeIsRequiredValidator<Role>(),
 );
 
 void main() {
@@ -130,9 +134,8 @@ class SignUpScreen extends ConsumerWidget {
                 ),
                 valueProxy: state.model.password,
                 errorMapping: (error) => switch (error) {
-                  Validator0Failed<String, IsRequired, MinLength> _ =>
-                    'Password is required',
-                  Validator1Failed<String, IsRequired, MinLength> _ =>
+                  Validator2_0Failed() => 'Password is required',
+                  Validator2_1Failed() =>
                     'Password must have at least 6 characters',
                 },
               ),
@@ -143,10 +146,8 @@ class SignUpScreen extends ConsumerWidget {
                 ),
                 valueProxy: state.model.confirmPassword,
                 errorMapping: (error) => switch (error) {
-                  Validator0Failed<String, IsRequired, IsEqual> _ =>
-                    'Password is required',
-                  Validator1Failed<String, IsRequired, IsEqual> _ =>
-                    'Passwords must match',
+                  Validator2_0Failed() => 'Password is required',
+                  Validator2_1Failed() => 'Passwords must match',
                 },
               ),
               RiverpodFormChoiceChips(
