@@ -43,31 +43,31 @@ typedef SingleFormValueProviderArgs = (
 );
 
 final class FormSingleValueProxy<VALUE, ERROR>
-    extends FormValueProxy<VALUE, ERROR, FormMultiValueState<VALUE, ERROR>> {
+    extends FormValueProxy<VALUE, ERROR, FormSingleValueState<VALUE, ERROR>> {
   FormSingleValueProxy({super.validator, super.initial, this.values});
 
-  FormMultiValueState<VALUE, ERROR> watch(Ref ref) =>
+  FormSingleValueState<VALUE, ERROR> watch(Ref ref) =>
       ref.watch(_provider).as<VALUE, ERROR>();
 
   void validate(Ref ref) {
     ref.read(_provider.notifier).validate();
   }
 
-  NotifierProvider<FormValueNotifier, FormMultiValueState<dynamic, dynamic>>
+  NotifierProvider<FormValueNotifier, FormSingleValueState<dynamic, dynamic>>
   get _provider => formValueProvider((key, this));
 
   VALUE? watchValue(Ref ref) =>
       ref.watch(formValueProvider((key, this)).select((s) => s.value))
           as VALUE?;
 
-  FormMultiValueState<VALUE, ERROR> watchW(WidgetRef ref) =>
+  FormSingleValueState<VALUE, ERROR> watchW(WidgetRef ref) =>
       ref.watch(formValueProvider((key, this))).as<VALUE, ERROR>();
 
-  FormMultiValueState<VALUE, ERROR> read(Ref ref) {
-    final FormMultiValueState<dynamic, dynamic> state = ref.read(
+  FormSingleValueState<VALUE, ERROR> read(Ref ref) {
+    final FormSingleValueState<dynamic, dynamic> state = ref.read(
       formValueProvider((key, this)),
     );
-    return FormMultiValueState<VALUE, ERROR>(
+    return FormSingleValueState<VALUE, ERROR>(
       isDirty: state.isDirty,
       error: state.error.as<ERROR>(),
       value: state.value as VALUE?,
@@ -75,11 +75,11 @@ final class FormSingleValueProxy<VALUE, ERROR>
     );
   }
 
-  FormMultiValueState<VALUE, ERROR> readW(WidgetRef ref) {
-    final FormMultiValueState<dynamic, dynamic> state = ref.read(
+  FormSingleValueState<VALUE, ERROR> readW(WidgetRef ref) {
+    final FormSingleValueState<dynamic, dynamic> state = ref.read(
       formValueProvider((key, this)),
     );
-    return FormMultiValueState<VALUE, ERROR>(
+    return FormSingleValueState<VALUE, ERROR>(
       isDirty: state.isDirty,
       error: state.error.as<ERROR>(),
       value: state.value as VALUE?,

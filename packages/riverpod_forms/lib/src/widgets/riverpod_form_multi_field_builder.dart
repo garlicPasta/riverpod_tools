@@ -5,7 +5,7 @@ import 'package:riverpod_forms/src/models/riverpod_form_value_state.dart';
 
 typedef RiverpodFormMultiFieldBuilderCallback<VALUE, ERROR> = Widget Function(
   BuildContext context,
-  FormMultiValueState<VALUE, ERROR> state,
+  FormMultipleValueState<VALUE, ERROR> state,
   void Function(List<VALUE>? value) setValue,
 );
 
@@ -14,7 +14,8 @@ class RiverpodFormMultiFieldBuilder<VAlUE, ERROR> extends ConsumerWidget {
 
   final Widget Function(
     BuildContext context,
-    FormMultiValueState<VAlUE, ERROR> state,
+    FormMultipleValueState<VAlUE, ERROR> formValueState,
+    void Function(List<VAlUE>? value) setValue,
   )
   builder;
 
@@ -29,11 +30,11 @@ class RiverpodFormMultiFieldBuilder<VAlUE, ERROR> extends ConsumerWidget {
       builder(context, valueProxy.watchW(ref), valueProxy.setValue);
 }
 
-abstract class RiverpodFormFieldHandler<VALUE, ERROR> extends StatefulWidget {
-  final FormMultiValueState<VALUE, ERROR> state;
+abstract class RiverpodFormMultiFieldHandler<VALUE, ERROR> extends StatefulWidget {
+  final FormMultipleValueState<VALUE, ERROR> state;
   final void Function(List<VALUE>? value) setValue;
 
-  const RiverpodFormFieldHandler({
+  const RiverpodFormMultiFieldHandler({
     super.key,
     required this.state,
     required this.setValue,

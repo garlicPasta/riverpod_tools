@@ -6,12 +6,12 @@ import 'package:riverpod_forms/src/models/riverpod_form_value_state.dart';
 final formValueProvider =
     NotifierProvider.family<
       FormValueNotifier<dynamic, dynamic>,
-      FormMultiValueState<dynamic, dynamic>,
+      FormSingleValueState<dynamic, dynamic>,
       SingleFormValueProviderArgs
     >((args) => FormValueNotifier<dynamic, dynamic>(args.$1, args.$2));
 
 final class FormValueNotifier<VALUE, ERROR>
-    extends Notifier<FormMultiValueState<VALUE, ERROR>> {
+    extends Notifier<FormSingleValueState<VALUE, ERROR>> {
   final String key;
   final FormSingleValueProxy<VALUE, ERROR> valueProxy;
   late final AsyncDebouncer _debouncer;
@@ -40,8 +40,8 @@ final class FormValueNotifier<VALUE, ERROR>
   }
 
   @override
-  FormMultiValueState<VALUE, ERROR> build() =>
-      FormMultiValueState<VALUE, ERROR>(
+  FormSingleValueState<VALUE, ERROR> build() =>
+      FormSingleValueState<VALUE, ERROR>(
         isDirty: isDirty,
         error: ValidationState.fromAsyncValue<ERROR>(
           _validateDynamic(ref, value).as<ERROR?>(),

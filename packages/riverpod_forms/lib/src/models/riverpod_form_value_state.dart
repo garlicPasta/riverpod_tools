@@ -8,7 +8,7 @@ final class Valid<T, ERROR>(T value) extends Result<T, ERROR> {}
 final class Invalid<T, ERROR>(ValidationState<ERROR> state)
     extends Result<T, ERROR> {}
 
-class FormMultiValueState<VALUE, ERROR>({
+class FormSingleValueState<VALUE, ERROR>({
   required final bool isDirty,
 
   final ValidationState<ERROR> error = const ValidationSuccess(),
@@ -17,7 +17,7 @@ class FormMultiValueState<VALUE, ERROR>({
 }) {
   bool get isValid => error is ValidationSuccess<ERROR>;
 
-  FormMultiValueState<T, E> as<T, E>() => FormMultiValueState<T, E>(
+  FormSingleValueState<T, E> as<T, E>() => FormSingleValueState<T, E>(
     isDirty: isDirty,
     error: error.as<E>(),
     value: value as T?,

@@ -44,7 +44,16 @@ final rolesSelect = FormSingleValueProxy<Role, IsRequired>(
   validator: makeIsRequiredValidator<Role>(),
 );
 
-final hobbiesMultiSelect = FormMu
+final hobbiesMultiSelect = FormMultipleValueProxy<String, IsRequired>(
+  values: (_) => AsyncData([
+    'Reading',
+    'Hiking',
+    'Cooking',
+    'Gaming',
+    'Photography',
+  ]),
+  validator: makeIsRequiredValidator<List<String>>(),
+);
 
 void main() {
   runApp(const ProviderScope(child: ExampleApp()));
@@ -62,6 +71,7 @@ class UserFormResult(
   final String email,
   final String password,
   final Role role,
+  final List<String> hobbies,
 );
 
 class SignUpForm extends RiverpodForm<UserFormResult> {
@@ -69,16 +79,19 @@ class SignUpForm extends RiverpodForm<UserFormResult> {
   final password = passwordField0;
   final confirmPassword = passwordField1;
   final roles = rolesSelect;
+  final hobbies = hobbiesMultiSelect;
 
   @override
   Iterator<FormValueProxy> get iterator =>
-      <FormValueProxy>[email, password, confirmPassword, roles].iterator;
+      <FormValueProxy>[email, password, confirmPassword, roles, hobbies]
+          .iterator;
 
   @override
   UserFormResult getResult(snapshot) => UserFormResult(
     email.getValid(snapshot),
     password.getValid(snapshot),
     roles.getValid(snapshot),
+    hobbies.getValid(snapshot),
   );
 }
 
@@ -152,12 +165,17 @@ class SignUpScreen extends ConsumerWidget {
                 labelMapping: (role) => role.name,
                 errorMapping: (error) => 'Role is required',
               ),
+              RiverpodFormMultiselectChips(
+                valueProxy: state.model.hobbies,
+                labelMapping: (hobby) => hobby,
+                errorMapping: (error) => 'Please select at least one hobby',
+              ),
               FilledButton(
                 onPressed: state.isValid
                     ? () {
                         final result = state.model.validateThenGetResult(ref);
                         final String message = result != null
-                            ? 'Ready to submit for ${result.email}'
+                            ? 'Ready to submit for ${result.email} (${result.hobbies.length} hobbies)'
                             : 'Form is invalid';
                         ScaffoldMessenger.of(context)
                             .showSnackBar(SnackBar(content: Text(message)));

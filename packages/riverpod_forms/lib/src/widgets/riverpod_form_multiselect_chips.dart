@@ -2,17 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_forms/riverpod_forms.dart';
 import 'package:riverpod_forms/src/models/form_multiple_value_proxy.dart';
-import 'package:riverpod_forms/src/utils/functional_helpers.dart';
-import 'package:riverpod_forms/src/widgets/riverpod_form_field_builder.dart';
 import 'package:riverpod_forms/src/widgets/riverpod_form_multi_field_builder.dart';
 
-import '../../riverpod_forms.dart';
-
-class RiverpodFormMultiselectChips<T, VALUE extends List<T>, E>
-    extends StatelessWidget {
-  final FormMultipleValueProxy<VALUE, E> valueProxy;
+class RiverpodFormMultiselectChips<T, E> extends StatelessWidget {
+  final FormMultipleValueProxy<T, E> valueProxy;
   final String Function(E)? errorMapping;
-  final String Function(VALUE)? labelMapping;
+  final String Function(T)? labelMapping;
 
   const RiverpodFormMultiselectChips({
     super.key,
@@ -22,45 +17,43 @@ class RiverpodFormMultiselectChips<T, VALUE extends List<T>, E>
   });
 
   @override
-  Widget build(BuildContext context) => RiverpodFormMultiFieldBuilder<VALUE, E>(
+  Widget build(BuildContext context) => RiverpodFormMultiFieldBuilder<T, E>(
     valueProxy: valueProxy,
-    builder: (context, state, setValue) => _RiverpodChoiceChips<VALUE, E>(
+    builder: (context, state, setValue) => _RiverpodChoiceChips<T, E>(
+      labelMapping: labelMapping!,
       state: state,
       setValue: setValue,
-      errorMapping: errorMapping,
-      labelMapping: labelMapping!,
     ),
   );
 }
 
-class _RiverpodChoiceChips<VALUE, E>
-    extends RiverpodFormFieldHandler<VALUE, E> {
+class _RiverpodChoiceChips<T, E> extends RiverpodFormMultiFieldHandler<T, E> {
   final String Function(E)? errorMapping;
-  final String Function(VALUE) labelMapping;
+  final String Function(T) labelMapping;
 
   const _RiverpodChoiceChips({
     super.key,
-    required super.state,
-    required super.setValue,
     required this.labelMapping,
     this.errorMapping,
+    required super.state,
+    required super.setValue,
   });
 
   @override
-  State<StatefulWidget> createState() => _RiverpodChoiceChipsState<VALUE, E>();
+  State<StatefulWidget> createState() => _RiverpodChoiceChipsState<T, E>();
 }
 
-class _RiverpodChoiceChipsState<VALUE, E>
-    extends State<_RiverpodChoiceChips<VALUE, E>> {
+class _RiverpodChoiceChipsState<T, E>
+    extends State<_RiverpodChoiceChips<T, E>> {
   @override
-  void didUpdateWidget(covariant _RiverpodChoiceChips<VALUE, E> oldWidget) {
+  void didUpdateWidget(covariant _RiverpodChoiceChips<T, E> oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.state.value != widget.state.value &&
         widget.state.value != null) {}
   }
 
   @override
-  Widget build(BuildContext context) => widget.state.values!.when(
+  Widget build(BuildContext context) => widget.state.values.when(
     error: (err, st) => Text('Error: $err'),
     loading: () => CircularProgressIndicator(),
     data: (values) => Column(
@@ -69,13 +62,19 @@ class _RiverpodChoiceChipsState<VALUE, E>
         Wrap(
           spacing: 4,
           children: values.map((v) {
-            final selected = widget.state.value == v;
+            final selected = widget.state.value?.contains(v) ?? false;
             return ChoiceChip(
               label: Text(widget.labelMapping(v)),
               onSelected: (isSelect) {
+                final currentValue = widget.state.value ?? <T>[];
                 if (isSelect) {
-                  widget.setValue(v);
+                  if (!currentValue.contains(v)) {
+                    widget.setValue([...currentValue, v]);
+                  }
+                  return;
                 }
+
+                widget.setValue(currentValue.where((item) => item != v).toList());
               },
               selected: selected,
             );
