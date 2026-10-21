@@ -76,7 +76,7 @@ class _RiverpodChoiceChipsState<VALUE, E>
             );
           }).toList(),
         ),
-        whenNotNull(
+        whenNull(
           widget.state.error.error,
           then: (value) => widget.state.isDirty
               ? Padding(

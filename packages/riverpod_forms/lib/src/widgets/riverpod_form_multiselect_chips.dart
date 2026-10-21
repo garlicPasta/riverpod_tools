@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_forms/riverpod_forms.dart';
-import 'package:riverpod_forms/src/models/form_multiple_value_proxy.dart';
 import 'package:riverpod_forms/src/widgets/riverpod_form_multi_field_builder.dart';
 
 class RiverpodFormMultiselectChips<T, E> extends StatelessWidget {
@@ -74,13 +73,15 @@ class _RiverpodChoiceChipsState<T, E>
                   return;
                 }
 
-                widget.setValue(currentValue.where((item) => item != v).toList());
+                widget.setValue(
+                  currentValue.where((item) => item != v).toList(),
+                );
               },
               selected: selected,
             );
           }).toList(),
         ),
-        whenNotNull(
+        whenNull(
           widget.state.error.error,
           then: (value) => widget.state.isDirty
               ? Padding(
