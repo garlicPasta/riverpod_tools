@@ -1,6 +1,14 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_forms/riverpod_forms.dart';
 
+typedef FormProvider<FORM extends RiverpodForm> =
+    NotifierProvider<FormNotifier<FORM>, RiverpodFormState<FORM>>;
+
+FormProvider<FORM> makeFormProvider<FORM extends RiverpodForm>(FORM model) =>
+    NotifierProvider<FormNotifier<FORM>, RiverpodFormState<FORM>>(
+      () => FormNotifier.make(model),
+    );
+
 class FormNotifier<MODEL extends RiverpodForm>
     extends Notifier<RiverpodFormState<MODEL>> {
   MODEL model;

@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_forms/riverpod_forms.dart';
 
 final checkIfEmailIsTaken = FutureProvider.family<bool, String>(
-  (ref, email) => Future.delayed(
+  (_, email) => Future.delayed(
     Duration(seconds: 2),
     () => ['user1@example.com', 'user2@example.com'].contains(email),
   ),
@@ -58,11 +58,9 @@ final hobbiesMultiSelect = MultiFormValue(
   ),
 );
 
-final NotifierProvider<FormNotifier<SignUpForm>, RiverpodFormState<SignUpForm>>
-signUpFormProvider =
-    NotifierProvider<FormNotifier<SignUpForm>, RiverpodFormState<SignUpForm>>(
-      () => FormNotifier.make(SignUpForm()),
-    );
+final FormProvider<SignUpForm> signUpFormProvider = makeFormProvider(
+  SignUpForm(),
+);
 
 class UserFormResult(
   final String email,
@@ -164,7 +162,11 @@ class SignUpScreen extends ConsumerWidget {
               RiverpodFormMultiselectChips(
                 valueProxy: state.model.hobbies,
                 labelMapping: (hobby) => hobby,
-                errorMapping: (error) => 'Please select at least one hobby',
+                errorMapping: (error) => switch (error) {
+                  Validator2_0Failed(error: IsRequired _) => '',
+                  Validator2_1Failed(error: ListSizeLessThan error) =>
+                    'Select at least ${error.size} hobbies',
+                },
               ),
               FilledButton(
                 onPressed: state.isValid

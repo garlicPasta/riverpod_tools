@@ -2,8 +2,8 @@ import 'package:riverpod_forms/src/models/validators.dart';
 
 final class ListIsEmpty {}
 
-final class ListSizeLessThan(int size);
-final class ListSizeBiggerThan(int size);
+final class ListSizeLessThan(final int size);
+final class ListSizeBiggerThan(final int size);
 
 Validator<List<T>, ListIsEmpty> makeListIsEmptyValidator<T>() =>
     .sync((List<T>? value) {

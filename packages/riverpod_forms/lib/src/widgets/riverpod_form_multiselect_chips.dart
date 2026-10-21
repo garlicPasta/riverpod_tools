@@ -19,6 +19,7 @@ class RiverpodFormMultiselectChips<T, E> extends StatelessWidget {
   Widget build(BuildContext context) => RiverpodFormMultiFieldBuilder<T, E>(
     valueProxy: valueProxy,
     builder: (context, state, setValue) => _RiverpodChoiceChips<T, E>(
+      errorMapping: errorMapping,
       labelMapping: labelMapping!,
       state: state,
       setValue: setValue,
