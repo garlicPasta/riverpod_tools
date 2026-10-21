@@ -44,6 +44,8 @@ final rolesSelect = FormSingleValueProxy<Role, IsRequired>(
   validator: makeIsRequiredValidator<Role>(),
 );
 
+final hobbiesMultiSelect = FormMu
+
 void main() {
   runApp(const ProviderScope(child: ExampleApp()));
 }
@@ -69,13 +71,8 @@ class SignUpForm extends RiverpodForm<UserFormResult> {
   final roles = rolesSelect;
 
   @override
-  Iterator<FormValueProxy<dynamic, dynamic>> get iterator =>
-      <FormValueProxy<dynamic, dynamic>>[
-        email,
-        password,
-        confirmPassword,
-        roles,
-      ].iterator;
+  Iterator<FormValueProxy> get iterator =>
+      <FormValueProxy>[email, password, confirmPassword, roles].iterator;
 
   @override
   UserFormResult getResult(snapshot) => UserFormResult(
@@ -156,14 +153,16 @@ class SignUpScreen extends ConsumerWidget {
                 errorMapping: (error) => 'Role is required',
               ),
               FilledButton(
-                onPressed: () {
-                  final result = state.model.validateThenGetResult(ref);
-                  final String message = result != null
-                      ? 'Ready to submit for ${result.email}'
-                      : 'Form is invalid';
-                  ScaffoldMessenger.of(context)
-                      .showSnackBar(SnackBar(content: Text(message)));
-                },
+                onPressed: state.isValid
+                    ? () {
+                        final result = state.model.validateThenGetResult(ref);
+                        final String message = result != null
+                            ? 'Ready to submit for ${result.email}'
+                            : 'Form is invalid';
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(SnackBar(content: Text(message)));
+                      }
+                    : null,
                 child: Text(state.isValid ? 'Submit' : 'Fix errors first'),
               ),
             ],

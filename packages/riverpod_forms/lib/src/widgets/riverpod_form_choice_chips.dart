@@ -5,7 +5,7 @@ import 'package:riverpod_forms/src/utils/functional_helpers.dart';
 import 'package:riverpod_forms/src/widgets/riverpod_form_field_builder.dart';
 
 class RiverpodFormChoiceChips<VALUE, E> extends StatelessWidget {
-  final FormValueProxy<VALUE, E> valueProxy;
+  final FormSingleValueProxy<VALUE, E> valueProxy;
   final String Function(E)? errorMapping;
   final String Function(VALUE)? labelMapping;
 

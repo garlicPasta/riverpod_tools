@@ -5,21 +5,21 @@ import 'package:riverpod_forms/src/models/riverpod_form_value_state.dart';
 
 final formValueProvider =
     NotifierProvider.family<
-      FormValue<dynamic, dynamic>,
-      FormSingleValueState<dynamic, dynamic>,
-      FormValueProviderArgs
-    >((args) => FormValue<dynamic, dynamic>(args.$1, args.$2));
+      FormValueNotifier<dynamic, dynamic>,
+      FormMultiValueState<dynamic, dynamic>,
+      SingleFormValueProviderArgs
+    >((args) => FormValueNotifier<dynamic, dynamic>(args.$1, args.$2));
 
-final class FormValue<VALUE, ERROR>
-    extends Notifier<FormSingleValueState<VALUE, ERROR>> {
+final class FormValueNotifier<VALUE, ERROR>
+    extends Notifier<FormMultiValueState<VALUE, ERROR>> {
   final String key;
-  final FormValueProxy<VALUE, ERROR> config;
+  final FormSingleValueProxy<VALUE, ERROR> valueProxy;
   late final AsyncDebouncer _debouncer;
   VALUE? value;
   bool isDirty = false;
 
-  FormValue(this.key, this.config) : value = config.initial {
-    config.setValue = setValue;
+  FormValueNotifier(this.key, this.valueProxy) : value = valueProxy.initial {
+    valueProxy.setValue = setValue;
     _debouncer = AsyncDebouncer(Duration(milliseconds: 80));
   }
 
@@ -32,7 +32,7 @@ final class FormValue<VALUE, ERROR>
   }
 
   AsyncValue<dynamic> _validateDynamic(Ref ref, dynamic value) =>
-      config.validateDynamic(ref, value);
+      valueProxy.validateDynamic(ref, value);
 
   void validate() {
     isDirty = true;
@@ -40,16 +40,13 @@ final class FormValue<VALUE, ERROR>
   }
 
   @override
-  FormSingleValueState<VALUE, ERROR> build() => switch (config) {
-    FormSingleValueProxy<VALUE, ERROR>(:final values) =>
-      FormSingleValueState<VALUE, ERROR>(
+  FormMultiValueState<VALUE, ERROR> build() =>
+      FormMultiValueState<VALUE, ERROR>(
         isDirty: isDirty,
         error: ValidationState.fromAsyncValue<ERROR>(
           _validateDynamic(ref, value).as<ERROR?>(),
         ),
         value: value,
-        values: values?.call(ref),
-      ),
-    FormMultipleValueProxy<dynamic, dynamic>() => throw UnimplementedError(),
-  };
+        values: valueProxy.values?.call(ref),
+      );
 }

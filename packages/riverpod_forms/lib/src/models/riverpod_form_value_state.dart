@@ -8,7 +8,7 @@ final class Valid<T, ERROR>(T value) extends Result<T, ERROR> {}
 final class Invalid<T, ERROR>(ValidationState<ERROR> state)
     extends Result<T, ERROR> {}
 
-class FormSingleValueState<VALUE, ERROR>({
+class FormMultiValueState<VALUE, ERROR>({
   required final bool isDirty,
 
   final ValidationState<ERROR> error = const ValidationSuccess(),
@@ -17,7 +17,7 @@ class FormSingleValueState<VALUE, ERROR>({
 }) {
   bool get isValid => error is ValidationSuccess<ERROR>;
 
-  FormSingleValueState<T, E> as<T, E>() => FormSingleValueState<T, E>(
+  FormMultiValueState<T, E> as<T, E>() => FormMultiValueState<T, E>(
     isDirty: isDirty,
     error: error.as<E>(),
     value: value as T?,
@@ -31,10 +31,16 @@ class FormSingleValueState<VALUE, ERROR>({
 
 class FormMultipleValueState<VALUE, ERROR>({
   required final bool isDirty,
-  final AsyncValue<ERROR?> error = const AsyncData(null),
+  final ValidationState<ERROR> error = const ValidationSuccess(),
   final List<VALUE>? value,
-  required AsyncValue<List<VALUE>> values,
+  required final AsyncValue<List<VALUE>> values,
 }) {
-  bool get isValid =>
-      !error.isLoading && !error.hasError && error.value == null;
+  bool get isValid => error is ValidationSuccess<ERROR>;
+
+  FormMultipleValueState<T, E> as<T, E>() => FormMultipleValueState<T, E>(
+    isDirty: isDirty,
+    error: error.as<E>(),
+    value: value as List<T>?,
+    values: values as AsyncValue<List<T>>,
+  );
 }

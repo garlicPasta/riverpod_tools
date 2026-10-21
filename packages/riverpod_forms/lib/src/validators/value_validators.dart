@@ -6,14 +6,14 @@ final class IsEqual();
 final class IsNotEqual();
 
 RiverpodValidator<VALUE, IsEqual> makeIsEqual<VALUE>(
-  FormValueProxy<VALUE, Object?> other,
+  FormValueProxy<VALUE, Object?, dynamic> other,
 ) => RiverpodValidator(
   (Ref ref, VALUE? value) =>
       AsyncValue.data(other.watchValue(ref) != value ? IsEqual() : null),
 );
 
 RiverpodValidator<VALUE, IsNotEqual> makeIsNotEqual<VALUE>(
-  FormValueProxy<VALUE, Object?> other,
+  FormValueProxy<VALUE, Object?, dynamic> other,
 ) => RiverpodValidator(
   (Ref ref, VALUE? value) =>
       AsyncValue.data(other.watchValue(ref) == value ? IsNotEqual() : null),
