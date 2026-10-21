@@ -4,7 +4,7 @@ import 'package:riverpod_forms/src/models/validation_result.dart';
 import 'package:riverpod_forms/src/widgets/riverpod_form_field_builder.dart';
 
 class RiverpodFormTextField<E> extends StatelessWidget {
-  final FormSingleValueProxy<String, E> valueProxy;
+  final SingleFormValue<String, E> valueProxy;
   final String Function(E)? errorMapping;
   final InputDecoration? decoration;
 

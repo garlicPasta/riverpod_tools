@@ -1,9 +1,9 @@
 import 'package:riverpod_forms/riverpod_forms.dart';
 
-FormSingleValueProxy<String, ERROR> makeTextField<ERROR>({
+SingleFormValue<String, ERROR> makeTextField<ERROR>({
   Validator<String, ERROR>? validator,
   String? initialValue,
-}) => FormSingleValueProxy<String, ERROR>(
+}) => SingleFormValue<String, ERROR>(
   validator: validator,
   initial: initialValue ?? '',
 );

@@ -1,19 +1,19 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:riverpod_forms/src/models/riverpod_form.dart';
+import 'package:riverpod_forms/src/models/form_value.dart';
 import 'package:riverpod_forms/src/models/validators.dart';
 
 final class IsEqual();
 final class IsNotEqual();
 
 Validator<VALUE, IsEqual> makeIsEqual<VALUE>(
-  FormValueProxy<VALUE, Object?, dynamic> other,
+  FormValue<VALUE, Object?, dynamic> other,
 ) => .riverpod(
   (Ref ref, VALUE? value) =>
       AsyncValue.data(other.watchValue(ref) != value ? IsEqual() : null),
 );
 
 Validator<VALUE, IsNotEqual> makeIsNotEqual<VALUE>(
-  FormValueProxy<VALUE, Object?, dynamic> other,
+  FormValue<VALUE, Object?, dynamic> other,
 ) => .riverpod(
   (Ref ref, VALUE? value) =>
       AsyncValue.data(other.watchValue(ref) == value ? IsNotEqual() : null),

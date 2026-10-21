@@ -4,7 +4,7 @@ import 'package:riverpod_forms/riverpod_forms.dart';
 import 'package:riverpod_forms/src/widgets/riverpod_form_multi_field_builder.dart';
 
 class RiverpodFormMultiselectChips<T, E> extends StatelessWidget {
-  final FormMultipleValueProxy<T, E> valueProxy;
+  final MultiFormValue<T, E> valueProxy;
   final String Function(E)? errorMapping;
   final String Function(T)? labelMapping;
 

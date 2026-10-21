@@ -1,6 +1,7 @@
 library riverpod_forms;
 
 export 'src/models/form_multiple_value_proxy.dart';
+export 'src/models/form_value.dart';
 export 'src/models/riverpod_form.dart';
 export 'src/models/validation_result.dart';
 export 'src/models/validators.dart';
@@ -9,6 +10,7 @@ export 'src/typedefs.dart';
 export 'src/utils/async_debouncer.dart';
 export 'src/utils/functional_helpers.dart';
 export 'src/utils/text_field_maker.dart';
+export 'src/validators/list_validators.dart';
 export 'src/validators/string_validators.dart';
 export 'src/validators/value_validators.dart';
 export 'src/widgets/riverpod_form_choice_chips.dart';

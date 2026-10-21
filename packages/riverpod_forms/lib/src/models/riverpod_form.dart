@@ -1,16 +1,16 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:meta/meta.dart';
 import 'package:riverpod_forms/riverpod_forms.dart';
-import 'package:riverpod_forms/src/models/riverpod_form_value_state.dart';
-import 'package:riverpod_forms/src/providers/form_value_notifier.dart';
-import 'package:uuid/uuid.dart';
+import 'package:riverpod_forms/src/models/single_form_value_state.dart';
+import 'package:riverpod_forms/src/models/value.dart';
+import 'package:riverpod_forms/src/providers/single_form_value_notifier.dart';
 
-part 'form_single_value_proxy.dart';
+part 'single_form_value.dart';
 
 typedef ValidFormSnapshot = Map<String, dynamic>;
 
 abstract class RiverpodForm<RESULT>
-    extends Iterable<FormValueProxy<dynamic, dynamic, dynamic>> {
+    extends Iterable<FormValue<dynamic, dynamic, dynamic>> {
   @protected
   @visibleForOverriding
   RESULT getResult(ValidFormSnapshot snapshot);

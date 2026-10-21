@@ -2,70 +2,67 @@ import 'package:flutter/material.dart' hide FormState;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_forms/riverpod_forms.dart';
 
-var checkIfEmailIsTaken = FutureProvider.family<bool, String>(
+final checkIfEmailIsTaken = FutureProvider.family<bool, String>(
   (ref, email) => Future.delayed(
     Duration(seconds: 2),
     () => ['user1@example.com', 'user2@example.com'].contains(email),
   ),
 );
 
-final emailField =
-    makeTextField<
-      CombinedValidatorResult3<String?, IsRequired, RegexMismatch, bool>
-    >(
-      validator: CombinedValidator3(
-        makeIsRequiredValidator<String>(),
-        makeIsValidEmailValidator(),
-        RiverpodValidator(
-          (ref, value) => ref
-              .watch(checkIfEmailIsTaken(value ?? ''))
-              .whenData((isTaken) => isTaken ? true : null),
-        ),
-      ),
-    );
+final emailField = makeTextField(
+  validator: .combined3(
+    makeIsRequiredValidator<String>(),
+    makeIsValidEmailValidator(),
+    RiverpodValidator(
+      (ref, value) => ref
+          .watch(checkIfEmailIsTaken(value ?? ''))
+          .whenData((isTaken) => isTaken ? true : null),
+    ),
+  ),
+);
 
 final passwordField0 =
     makeTextField<CombinedValidatorResult2<String?, IsRequired, MinLength>>(
-      validator: CombinedValidator2(
-        makeIsRequiredValidator<String>(),
+      validator: .combined2(
+        makeIsRequiredValidator(),
         makeMinLengthValidator(6),
       ),
     );
 
 final passwordField1 = makeTextField(
-  validator: CombinedValidator2(
+  validator: .combined2(
     makeIsRequiredValidator<String>(),
     makeIsEqual(passwordField0),
   ),
 );
 
-final rolesSelect = FormSingleValueProxy<Role, IsRequired>(
+enum Role { admin, user, guest }
+
+final rolesSelect = SingleFormValue<Role, IsRequired>(
   values: (_) => AsyncData(Role.values),
   validator: makeIsRequiredValidator<Role>(),
 );
 
-final hobbiesMultiSelect = FormMultipleValueProxy<String, IsRequired>(
-  values: (_) => AsyncData([
-    'Reading',
-    'Hiking',
-    'Cooking',
-    'Gaming',
-    'Photography',
-  ]),
-  validator: makeIsRequiredValidator<List<String>>(),
+final fetchHobbiesProvider = FutureProvider<List<String>>(
+  (ref) => Future.delayed(
+    Duration(seconds: 2),
+    () => ['Reading', 'Hiking', 'Cooking', 'Gaming', 'Photography'],
+  ),
 );
 
-void main() {
-  runApp(const ProviderScope(child: ExampleApp()));
-}
+final hobbiesMultiSelect = MultiFormValue(
+  values: (ref) => ref.watch(fetchHobbiesProvider),
+  validator: .combined2(
+    makeIsRequiredValidator<List<String>>(),
+    makeListSizeLessThanValidator<String>(2),
+  ),
+);
 
 final NotifierProvider<FormNotifier<SignUpForm>, RiverpodFormState<SignUpForm>>
 signUpFormProvider =
     NotifierProvider<FormNotifier<SignUpForm>, RiverpodFormState<SignUpForm>>(
       () => FormNotifier.make(SignUpForm()),
     );
-
-enum Role { admin, user, guest }
 
 class UserFormResult(
   final String email,
@@ -82,9 +79,8 @@ class SignUpForm extends RiverpodForm<UserFormResult> {
   final hobbies = hobbiesMultiSelect;
 
   @override
-  Iterator<FormValueProxy> get iterator =>
-      <FormValueProxy>[email, password, confirmPassword, roles, hobbies]
-          .iterator;
+  Iterator<FormValue> get iterator =>
+      <FormValue>[email, password, confirmPassword, roles, hobbies].iterator;
 
   @override
   UserFormResult getResult(snapshot) => UserFormResult(
@@ -189,4 +185,8 @@ class SignUpScreen extends ConsumerWidget {
       ),
     ),
   );
+}
+
+void main() {
+  runApp(const ProviderScope(child: ExampleApp()));
 }
