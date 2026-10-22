@@ -8,7 +8,7 @@ SingleFormValue<String, ERROR> makeTextField<ERROR>({
   bool Function(Ref ref)? isVisible,
 }) => SingleFormValue<String, ERROR>(
   validator: validator,
-  initial: initialValue ?? '',
+  initial: initialValue,
   isEnabled: isEnabled,
   isVisible: isVisible,
 );

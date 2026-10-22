@@ -11,12 +11,21 @@ abstract class FormValueState<VALUE, ERROR>({
   final ValidationState<ERROR> error = const ValidationSuccess(),
 }) extends Equatable {
   @override
-  List<Object?> get props => [isDirty, isInitializing, value, error];
+  List<Object?> get props => [
+    isDirty,
+    isEnabled,
+    isVisible,
+    isInitializing,
+    value,
+    error,
+  ];
 }
 
 class SingleFormValueState<VALUE, ERROR>({
   required super.isDirty,
   required super.isInitializing,
+  super.isEnabled,
+  super.isVisible,
   super.value,
   super.error = const ValidationSuccess(),
   final AsyncValue<List<VALUE>>? values,
@@ -26,9 +35,12 @@ class SingleFormValueState<VALUE, ERROR>({
 
   SingleFormValueState<T, E> as<T, E>() => SingleFormValueState<T, E>(
     isDirty: isDirty,
+    isEnabled: isEnabled,
+    isVisible: isVisible,
     error: error.as<E>(),
     value: value as T?,
     values: values as AsyncValue<List<T>>?,
+    suggestions: suggestions as AsyncValue<List<T>>?,
     isInitializing: isInitializing,
   );
 }
@@ -36,6 +48,8 @@ class SingleFormValueState<VALUE, ERROR>({
 class FormMultipleValueState<VALUE, ERROR>({
   required super.isDirty,
   required super.isInitializing,
+  super.isEnabled,
+  super.isVisible,
   required final AsyncValue<List<VALUE>> values,
   final ValidationState<ERROR> error = const ValidationSuccess(),
   final List<VALUE>? value,
@@ -44,6 +58,8 @@ class FormMultipleValueState<VALUE, ERROR>({
 
   FormMultipleValueState<T, E> as<T, E>() => FormMultipleValueState<T, E>(
     isDirty: isDirty,
+    isEnabled: isEnabled,
+    isVisible: isVisible,
     isInitializing: isInitializing,
     error: error.as<E>(),
     value: value as List<T>?,

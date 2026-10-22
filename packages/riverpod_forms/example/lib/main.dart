@@ -30,7 +30,7 @@ final passwordField0 =
     );
 
 final passwordField1 = makeTextField(
-  // isEnabled: (ref) => passwordField0.watchValue(ref) != null,
+  isEnabled: (ref) => !(passwordField0.watchValue(ref)?.isEmpty ?? true),
   validator: .combined2(
     makeIsRequiredValidator<String>(),
     makeIsEqual(passwordField0),

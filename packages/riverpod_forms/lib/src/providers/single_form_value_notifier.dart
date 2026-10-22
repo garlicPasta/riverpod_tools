@@ -70,12 +70,14 @@ final class SingleFormValueNotifier<VALUE, ERROR>
   @override
   SingleFormValueState<VALUE, ERROR> build() =>
       SingleFormValueState<VALUE, ERROR>(
+        isInitializing: isInitializing,
         isDirty: isDirty,
         error: ValidationState.fromAsyncValue<ERROR>(
           _validateDynamic(ref, value).as<ERROR?>(),
         ),
         value: value,
         values: valueProxy.values?.call(ref),
-        isInitializing: isInitializing,
+        isEnabled: valueProxy.isEnabled?.call(ref) ?? true,
+        isVisible: valueProxy.isVisible?.call(ref) ?? true,
       );
 }
