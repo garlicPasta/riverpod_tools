@@ -1,3 +1,4 @@
+import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:meta/meta.dart';
 import 'package:riverpod_forms/riverpod_forms.dart';
@@ -42,4 +43,7 @@ abstract class RiverpodForm<RESULT>
 final class RiverpodFormState<MODEL extends RiverpodForm>(
   final MODEL model,
   final bool isValid,
-);
+) extends Equatable {
+  @override
+  List<Object?> get props => [model, isValid];
+}

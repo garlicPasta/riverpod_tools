@@ -1,20 +1,12 @@
+@pragma("vm:prefer-inline")
 TResult? whenNull<TValue, TResult>(
   TValue? value, {
   required TResult Function(TValue value) then,
-}) {
-  if (value == null) {
-    return null;
-  }
-  return then(value);
-}
+}) => (value == null) ? null : then(value);
 
+@pragma("vm:prefer-inline")
 TResult notNullOr<TValue, TResult>(
   TValue? value, {
   required TResult Function(TValue value) then,
   required TResult orElse,
-}) {
-  if (value == null) {
-    return orElse;
-  }
-  return then(value);
-}
+}) => (value == null) ? orElse : then(value);

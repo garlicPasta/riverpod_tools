@@ -113,76 +113,80 @@ class SignUpScreen extends ConsumerWidget {
         constraints: BoxConstraints(maxWidth: 600),
         child: RiverpodFormView(
           form: signUpFormProvider,
-          builder: (_, state) => Column(
-            spacing: 12,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              RiverpodFormTextField(
-                decoration: const InputDecoration(
-                  labelText: 'Email',
-                  hintText: 'Enter your email',
+          builder: (_, state) {
+            print('build');
+            return Column(
+              spacing: 12,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                RiverpodFormTextField(
+                  decoration: const InputDecoration(
+                    labelText: 'Email',
+                    hintText: 'Enter your email',
+                  ),
+                  valueProxy: state.model.email,
+                  errorMapping: (error) => switch (error) {
+                    Validator3_0Failed(error: IsRequired _) =>
+                      'Email is required',
+                    Validator3_1Failed(error: RegexMismatch _) =>
+                      'Email format is invalid',
+                    Validator3_2Failed(error: bool _) =>
+                      'Email is already taken',
+                  },
                 ),
-                valueProxy: state.model.email,
-                errorMapping: (error) => switch (error) {
-                  Validator3_0Failed(error: IsRequired _) =>
-                    'Email is required',
-                  Validator3_1Failed(error: RegexMismatch _) =>
-                    'Email format is invalid',
-                  Validator3_2Failed(error: bool _) => 'Email is already taken',
-                },
-              ),
-              RiverpodFormTextField(
-                decoration: const InputDecoration(
-                  labelText: 'Password',
-                  hintText: 'Enter at least 6 characters',
+                RiverpodFormTextField(
+                  decoration: const InputDecoration(
+                    labelText: 'Password',
+                    hintText: 'Enter at least 6 characters',
+                  ),
+                  valueProxy: state.model.password,
+                  errorMapping: (error) => switch (error) {
+                    Validator2_0Failed() => 'Password is required',
+                    Validator2_1Failed() =>
+                      'Password must have at least 6 characters',
+                  },
                 ),
-                valueProxy: state.model.password,
-                errorMapping: (error) => switch (error) {
-                  Validator2_0Failed() => 'Password is required',
-                  Validator2_1Failed() =>
-                    'Password must have at least 6 characters',
-                },
-              ),
-              RiverpodFormTextField(
-                decoration: const InputDecoration(
-                  labelText: 'Confirm password',
-                  hintText: 'Re-enter your password',
+                RiverpodFormTextField(
+                  decoration: const InputDecoration(
+                    labelText: 'Confirm password',
+                    hintText: 'Re-enter your password',
+                  ),
+                  valueProxy: state.model.confirmPassword,
+                  errorMapping: (error) => switch (error) {
+                    Validator2_0Failed() => 'Password is required',
+                    Validator2_1Failed() => 'Passwords must match',
+                  },
                 ),
-                valueProxy: state.model.confirmPassword,
-                errorMapping: (error) => switch (error) {
-                  Validator2_0Failed() => 'Password is required',
-                  Validator2_1Failed() => 'Passwords must match',
-                },
-              ),
-              RiverpodFormChoiceChips(
-                valueProxy: state.model.roles,
-                labelMapping: (role) => role.name,
-                errorMapping: (error) => 'Role is required',
-              ),
-              RiverpodFormMultiselectChips(
-                valueProxy: state.model.hobbies,
-                labelMapping: (hobby) => hobby,
-                errorMapping: (error) => switch (error) {
-                  Validator2_0Failed(error: IsRequired _) => '',
-                  Validator2_1Failed(error: ListSizeLessThan error) =>
-                    'Select at least ${error.size} hobbies',
-                },
-              ),
-              FilledButton(
-                onPressed: state.isValid
-                    ? () {
-                        final result = state.model.validateThenGetResult(ref);
-                        final String message = result != null
-                            ? 'Ready to submit for ${result.email} (${result.hobbies.length} hobbies)'
-                            : 'Form is invalid';
-                        ScaffoldMessenger.of(context)
-                            .showSnackBar(SnackBar(content: Text(message)));
-                      }
-                    : null,
-                child: Text(state.isValid ? 'Submit' : 'Fix errors first'),
-              ),
-            ],
-          ),
+                RiverpodFormChoiceChips(
+                  valueProxy: state.model.roles,
+                  labelMapping: (role) => role.name,
+                  errorMapping: (error) => 'Role is required',
+                ),
+                RiverpodFormMultiselectChips(
+                  valueProxy: state.model.hobbies,
+                  labelMapping: (hobby) => hobby,
+                  errorMapping: (error) => switch (error) {
+                    Validator2_0Failed(error: IsRequired _) => '',
+                    Validator2_1Failed(error: ListSizeLessThan error) =>
+                      'Select at least ${error.size} hobbies',
+                  },
+                ),
+                FilledButton(
+                  onPressed: state.isValid
+                      ? () {
+                          final result = state.model.validateThenGetResult(ref);
+                          final String message = result != null
+                              ? 'Ready to submit for ${result.email} (${result.hobbies.length} hobbies)'
+                              : 'Form is invalid';
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(SnackBar(content: Text(message)));
+                        }
+                      : null,
+                  child: Text(state.isValid ? 'Submit' : 'Fix errors first'),
+                ),
+              ],
+            );
+          },
         ),
       ),
     ),

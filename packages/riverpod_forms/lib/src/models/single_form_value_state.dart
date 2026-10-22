@@ -1,3 +1,4 @@
+import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_forms/riverpod_forms.dart';
 
@@ -6,7 +7,10 @@ abstract class FormValueState<VALUE, ERROR>({
   required final bool isInitializing,
   final VALUE? value,
   final ValidationState<ERROR> error = const ValidationSuccess(),
-}) {}
+}) extends Equatable {
+  @override
+  List<Object?> get props => [isDirty, isInitializing, value, error];
+}
 
 class SingleFormValueState<VALUE, ERROR>({
   required super.isDirty,
