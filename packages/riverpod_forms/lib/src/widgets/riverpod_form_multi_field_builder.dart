@@ -26,8 +26,13 @@ class RiverpodFormMultiFieldBuilder<VAlUE, ERROR> extends ConsumerWidget {
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) =>
-      builder(context, valueProxy.watchW(ref), valueProxy.setValue);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final state = valueProxy.watchW(ref);
+    if (!state.isVisible) {
+      return const SizedBox.shrink();
+    }
+    return builder(context, state, valueProxy.setValue);
+  }
 }
 
 abstract class RiverpodFormMultiFieldHandler<VALUE, ERROR>

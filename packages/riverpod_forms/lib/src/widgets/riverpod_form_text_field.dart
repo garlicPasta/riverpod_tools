@@ -62,31 +62,28 @@ class _RiverpodTextState<E> extends State<_RiverpodText<E>> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    print(widget.state.isEnabled);
-    return TextField(
-      enabled: widget.state.isEnabled,
-      controller: controller,
-      onChanged: widget.setValue,
-      decoration: (widget.decoration ?? InputDecoration()).copyWith(
-        suffix: switch (widget.state.error) {
-          ValidationInProgress<E>() => const CircularProgressIndicator(
-            constraints: BoxConstraints.tightFor(width: 16, height: 16),
-          ),
-          _ => null,
-        },
-        errorText: widget.state.isDirty
-            ? switch (widget.state.error) {
-                ValidationInProgress<E>() => null,
-                ValidationSuccess<E>() => null,
-                ValidationFailed<E>(:final failure) => switch (failure) {
-                  ValidationFailure<E>(:final error) =>
-                    widget.errorMapping?.call(error) ?? '',
-                  ValidationException<E>() => 'Validation failed',
-                },
-              }
-            : null,
-      ),
-    );
-  }
+  Widget build(BuildContext context) => TextField(
+    enabled: widget.state.isEnabled,
+    controller: controller,
+    onChanged: widget.setValue,
+    decoration: (widget.decoration ?? InputDecoration()).copyWith(
+      suffix: switch (widget.state.error) {
+        ValidationInProgress<E>() => const CircularProgressIndicator(
+          constraints: BoxConstraints.tightFor(width: 16, height: 16),
+        ),
+        _ => null,
+      },
+      errorText: widget.state.isDirty
+          ? switch (widget.state.error) {
+              ValidationInProgress<E>() => null,
+              ValidationSuccess<E>() => null,
+              ValidationFailed<E>(:final failure) => switch (failure) {
+                ValidationFailure<E>(:final error) =>
+                  widget.errorMapping?.call(error) ?? '',
+                ValidationException<E>() => 'Validation failed',
+              },
+            }
+          : null,
+    ),
+  );
 }

@@ -10,41 +10,35 @@ final checkIfEmailIsTaken = FutureProvider.family<bool, String>(
 );
 
 final emailField = makeTextField(
-  validator: .combined3(
-    makeIsRequiredValidator<String>(),
-    makeIsValidEmailValidator(),
-    RiverpodValidator(
-      (ref, value) => ref
-          .watch(checkIfEmailIsTaken(value ?? ''))
-          .whenData((isTaken) => isTaken ? true : null),
-    ),
-  ),
+  validator: isRequired<String>()
+      .and(isEmail())
+      .and(
+        .riverpod(
+          (ref, value) => ref
+              .watch(checkIfEmailIsTaken(value ?? ''))
+              .whenData((isTaken) => isTaken ? true : null),
+        ),
+      ),
 );
 
 final passwordField0 =
     makeTextField<CombinedValidatorResult2<String?, IsRequired, MinLength>>(
-      validator: .combined2(
-        makeIsRequiredValidator(),
-        makeMinLengthValidator(6),
-      ),
+      validator: isRequired<String>().and(stringHasMinLegth(6)),
     );
 
 final passwordField1 = makeTextField(
   isEnabled: (ref) => !(passwordField0.watchValue(ref)?.isEmpty ?? true),
-  validator: .combined2(
-    makeIsRequiredValidator<String>(),
-    makeIsEqual(passwordField0),
-  ),
+  validator: isRequired<String>().and(isEqual(passwordField0)),
 );
 
 enum Role { admin, user, guest }
 
 final rolesSelect = SingleFormValue<Role, IsRequired>(
   values: (_) => AsyncData(Role.values),
-  validator: makeIsRequiredValidator<Role>(),
+  validator: isRequired(),
 );
 
-final fetchHobbiesProvider = FutureProvider<List<String>>(
+final rightsProvider = FutureProvider<List<String>>(
   (ref) => Future.delayed(
     Duration(seconds: 2),
     () => ['Reading', 'Hiking', 'Cooking', 'Gaming', 'Photography'],
@@ -52,11 +46,8 @@ final fetchHobbiesProvider = FutureProvider<List<String>>(
 );
 
 final hobbiesMultiSelect = MultiFormValue(
-  values: (ref) => ref.watch(fetchHobbiesProvider),
-  validator: .combined2(
-    makeIsRequiredValidator<List<String>>(),
-    makeListSizeLessThanValidator<String>(2),
-  ),
+  values: (ref) => ref.watch(rightsProvider),
+  validator: isRequired<List<String>>().and(sizeLessThan<String>(1)),
 );
 
 final FormProvider<SignUpForm> signUpFormProvider = makeFormProvider(

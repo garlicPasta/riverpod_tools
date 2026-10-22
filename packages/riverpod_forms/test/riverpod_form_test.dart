@@ -16,12 +16,12 @@
 //             CombinedValidator2<String, IsRequired, MinLength>
 //           >(
 //             validator: makeValidator2(
-//               makeIsRequiredValidator(),
+//               isRequired(),
 //               makeMinLengthValidator(3),
 //             ),
 //           ),
 //       password = FormSingleValueProxy<String, IsRequired>(
-//         validator: makeIsRequiredValidator(),
+//         validator: isRequired(),
 //       );
 
 //   final FormValueProxy<
@@ -41,7 +41,7 @@
 //     'password': password.getValid(snapshot),
 //   };
 
-//   Validator<String, CombinedValidator2<String, IsRequired, MinLength>>? makeValidator2(SyncValidator<dynamic, IsRequired> makeIsRequiredValidator, SyncValidator<String, MinLength> makeMinLengthValidator) {}
+//   Validator<String, CombinedValidator2<String, IsRequired, MinLength>>? makeValidator2(SyncValidator<dynamic, IsRequired> isRequired, SyncValidator<String, MinLength> makeMinLengthValidator) {}
 // }
 
 // void main() {

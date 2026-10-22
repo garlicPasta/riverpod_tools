@@ -65,19 +65,21 @@ class _RiverpodChoiceChipsState<T, E>
             final selected = widget.state.value?.contains(v) ?? false;
             return ChoiceChip(
               label: Text(widget.labelMapping(v)),
-              onSelected: (isSelect) {
-                final currentValue = widget.state.value ?? <T>[];
-                if (isSelect) {
-                  if (!currentValue.contains(v)) {
-                    widget.setValue([...currentValue, v]);
-                  }
-                  return;
-                }
+              onSelected: widget.state.isEnabled
+                  ? (isSelect) {
+                      final currentValue = widget.state.value ?? <T>[];
+                      if (isSelect) {
+                        if (!currentValue.contains(v)) {
+                          widget.setValue([...currentValue, v]);
+                        }
+                        return;
+                      }
 
-                widget.setValue(
-                  currentValue.where((item) => item != v).toList(),
-                );
-              },
+                      widget.setValue(
+                        currentValue.where((item) => item != v).toList(),
+                      );
+                    }
+                  : null,
               selected: selected,
             );
           }).toList(),

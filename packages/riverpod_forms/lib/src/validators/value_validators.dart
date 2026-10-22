@@ -5,23 +5,23 @@ import 'package:riverpod_forms/src/models/validators.dart';
 final class IsEqual();
 final class IsNotEqual();
 
-Validator<VALUE, IsEqual> makeIsEqual<VALUE>(
+RiverpodValidator<VALUE, IsEqual> isEqual<VALUE>(
   FormValue<VALUE, Object?, dynamic> other,
-) => .riverpod(
+) => .new(
   (Ref ref, VALUE? value) =>
       AsyncValue.data(other.watchValue(ref) != value ? IsEqual() : null),
 );
 
-Validator<VALUE, IsNotEqual> makeIsNotEqual<VALUE>(
+RiverpodValidator<VALUE, IsNotEqual> isNotEqual<VALUE>(
   FormValue<VALUE, Object?, dynamic> other,
-) => .riverpod(
+) => .new(
   (Ref ref, VALUE? value) =>
       AsyncValue.data(other.watchValue(ref) == value ? IsNotEqual() : null),
 );
 
 final class IsRequired {}
 
-Validator<T, IsRequired> makeIsRequiredValidator<T>() => .sync((T? value) {
+SyncValidator<T, IsRequired> isRequired<T>() => .new((T? value) {
   if (value == null || (value is String && value.isEmpty)) {
     return IsRequired();
   }

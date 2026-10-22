@@ -10,6 +10,8 @@ final class MultiFormValue<T, ERROR>
 
   MultiFormValue({
     super.initial,
+    super.isEnabled,
+    super.isVisible,
     required this.values,
     required super.validator,
   });

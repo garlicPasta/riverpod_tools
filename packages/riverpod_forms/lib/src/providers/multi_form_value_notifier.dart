@@ -51,6 +51,8 @@ final class MultiFormValueNotifier<VALUE, ERROR>
       FormMultipleValueState<VALUE, ERROR>(
         isDirty: isDirty,
         isInitializing: isInitializing,
+        isEnabled: proxy.isEnabled?.call(ref) ?? true,
+        isVisible: proxy.isVisible?.call(ref) ?? true,
         error: ValidationState.fromAsyncValue<ERROR>(
           _validateDynamic(ref, value).as<ERROR?>(),
         ),

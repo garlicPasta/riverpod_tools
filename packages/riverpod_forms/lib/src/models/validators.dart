@@ -11,46 +11,26 @@ typedef ValueValidator<VALUE, ERROR> = AsyncValue<ERROR?> Function(
 sealed class Validator<T, ERROR> {
   const Validator._();
 
-  factory Validator.sync(ERROR? Function(T? value) validate) =>
+  static SyncValidator<T, ERROR> sync<T, ERROR>(ERROR? Function(T? value) validate) =>
       SyncValidator<T, ERROR>(validate);
 
-  factory Validator.async(Future<ERROR?> Function(T value) validate) =>
+  static AsyncValidator<T, ERROR> async<T, ERROR>(Future<ERROR?> Function(T value) validate) =>
       AsyncValidator<T, ERROR>(validate);
 
-  factory Validator.riverpod(
+  static RiverpodValidator<T, ERROR> riverpod<T, ERROR>(
     AsyncValue<ERROR?> Function(Ref ref, T? value) validate,
   ) => RiverpodValidator<T, ERROR>(validate);
 
   ValueValidator<T, ERROR> get normalize;
-
-  static Validator<T, CombinedValidatorResult2<T, E0, E1>> combined2<T, E0, E1>(
-    Validator<T, E0> v0,
-    Validator<T, E1> v1,
-  ) => makeCombinedValidator2<T, E0, E1>(v0, v1);
-
-  static Validator<T, CombinedValidatorResult3<T, E0, E1, E2>>
-  combined3<T, E0, E1, E2>(
-    Validator<T, E0> v0,
-    Validator<T, E1> v1,
-    Validator<T, E2> v2,
-  ) => makeCombinedValidator3<T, E0, E1, E2>(v0, v1, v2);
 }
-
-Validator<T, CombinedValidatorResult2<T, E0, E1>>
-makeCombinedValidator2<T, E0, E1>(Validator<T, E0> v0, Validator<T, E1> v1) =>
-    CombinedValidator2<T, E0, E1>(v0, v1);
-
-Validator<T, CombinedValidatorResult3<T, E0, E1, E2>>
-makeCombinedValidator3<T, E0, E1, E2>(
-  Validator<T, E0> v0,
-  Validator<T, E1> v1,
-  Validator<T, E2> v2,
-) => CombinedValidator3<T, E0, E1, E2>(v0, v1, v2);
 
 final class SyncValidator<T, ERROR> extends Validator<T, ERROR> {
   final ERROR? Function(T? value) validate;
 
   const SyncValidator(this.validate) : super._();
+
+  CombinedValidator2<T, ERROR, ERROR1> and<ERROR1>(Validator<T, ERROR1> v) =>
+      CombinedValidator2(this, v);
 
   @override
   ValueValidator<T, ERROR> get normalize =>
@@ -61,6 +41,9 @@ final class AsyncValidator<T, ERROR> extends Validator<T, ERROR> {
   final Future<ERROR?> Function(T value) validate;
 
   const AsyncValidator(this.validate) : super._();
+
+  CombinedValidator2<T, ERROR, ERROR1> and<ERROR1>(Validator<T, ERROR1> v) =>
+      CombinedValidator2(this, v);
 
   @override
   ValueValidator<T, ERROR> get normalize =>
@@ -74,6 +57,9 @@ final class RiverpodValidator<T, ERROR> extends Validator<T, ERROR> {
 
   const RiverpodValidator(this.validate) : super._();
 
+  CombinedValidator2<T, ERROR, ERROR1> and<ERROR1>(Validator<T, ERROR1> v) =>
+      CombinedValidator2(this, v);
+
   @override
   ValueValidator<T, ERROR> get normalize => validate;
 }
@@ -84,6 +70,9 @@ final class CombinedValidator2<T, E0, E1>
   final Validator<T, E1> v1;
 
   const CombinedValidator2(this.v0, this.v1) : super._();
+
+  CombinedValidator3<T, E0, E1, E2> and<E2>(Validator<T, E2> v2) =>
+      CombinedValidator3(v0, v1, v2);
 
   @override
   ValueValidator<T, CombinedValidatorResult2<T, E0, E1>> get normalize =>
