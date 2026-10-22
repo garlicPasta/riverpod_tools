@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:meta/meta.dart';
 import 'package:riverpod_forms/riverpod_forms.dart';
 import 'package:riverpod_forms/src/models/single_form_value_state.dart';
-import 'package:riverpod_forms/src/models/value.dart';
 import 'package:riverpod_forms/src/providers/single_form_value_notifier.dart';
 
 part 'single_form_value.dart';

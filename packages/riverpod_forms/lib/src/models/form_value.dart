@@ -10,6 +10,8 @@ var _uuid = Uuid();
 abstract class FormValue<VALUE, ERROR, STATE extends Object>({
   this.validator,
   this.initial,
+  this.isEnabled,
+  this.isVisible,
 }) {
   static FormValue<VALUE, ERROR, SingleFormValueState<VALUE, ERROR>>
   single<VALUE, ERROR>({
@@ -17,12 +19,14 @@ abstract class FormValue<VALUE, ERROR, STATE extends Object>({
     VALUE? initial,
     AsyncValue<List<VALUE>> Function(Ref ref)? values,
   }) => SingleFormValue<VALUE, ERROR>(
-    validator: validator,
     initial: initial,
+    validator: validator,
     values: values,
   );
 
   final Validator<VALUE, ERROR>? validator;
+  final bool Function(Ref ref)? isEnabled;
+  final bool Function(Ref ref)? isVisible;
   final FutureOr<VALUE?> initial;
 
   late Function(VALUE? value) setValue;
@@ -44,11 +48,4 @@ abstract class FormValue<VALUE, ERROR, STATE extends Object>({
       validator?.normalize(ref, val) ?? AsyncValue.data(null);
 
   VALUE getValid(ValidFormSnapshot snapshot) => snapshot[key] as VALUE;
-}
-
-abstract class SingleValueFormValue<VALUE, ERROR>
-    extends FormValue<VALUE, ERROR, SingleFormValueState<VALUE, ERROR>> {
-  SingleValueFormValue({super.validator, super.initial});
-
-  AsyncValue<List<VALUE>> Function(Ref ref)? get values;
 }

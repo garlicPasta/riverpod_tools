@@ -4,6 +4,8 @@ import 'package:riverpod_forms/riverpod_forms.dart';
 
 abstract class FormValueState<VALUE, ERROR>({
   final bool isDirty = false,
+  final bool isEnabled = true,
+  final bool isVisible = true,
   required final bool isInitializing,
   final VALUE? value,
   final ValidationState<ERROR> error = const ValidationSuccess(),

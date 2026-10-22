@@ -10,7 +10,7 @@ final formValueProvider =
     NotifierProvider.family<
       SingleFormValueNotifier<dynamic, dynamic>,
       SingleFormValueState<dynamic, dynamic>,
-      (String, SingleValueFormValue<dynamic, dynamic>)
+      (String, SingleFormValue<dynamic, dynamic>)
     >((args) => SingleFormValueNotifier<dynamic, dynamic>(args.$1, args.$2));
 
 abstract class FormValueNotifier<VALUE, ERROR, STATE> extends Notifier<STATE> {
@@ -43,7 +43,7 @@ final class SingleFormValueNotifier<VALUE, ERROR>
     extends
         FormValueNotifier<VALUE, ERROR, SingleFormValueState<VALUE, ERROR>> {
   late final AsyncDebouncer _debouncer;
-  final SingleValueFormValue<VALUE, ERROR> valueProxy;
+  final SingleFormValue<VALUE, ERROR> valueProxy;
 
   SingleFormValueNotifier(String key, this.valueProxy)
     : super(key, valueProxy.initial) {
