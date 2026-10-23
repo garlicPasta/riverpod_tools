@@ -10,6 +10,7 @@ final checkIfEmailIsTaken = FutureProvider.family<bool, String>(
 );
 
 final emailField = makeTextField(
+  initialValue: Future.delayed(Duration(seconds: 1), () => 'alice@example.de'),
   validator: isRequired<String>()
       .and(isEmail())
       .and(
@@ -45,7 +46,7 @@ final rightsProvider = FutureProvider<List<String>>(
   ),
 );
 
-final hobbiesMultiSelect = MultiFormValue(
+final permissionsSelect = MultiFormValue(
   values: (ref) => ref.watch(rightsProvider),
   validator: isRequired<List<String>>().and(sizeLessThan<String>(1)),
 );
@@ -66,7 +67,7 @@ class SignUpForm extends RiverpodForm<UserFormResult> {
   final password = passwordField0;
   final confirmPassword = passwordField1;
   final roles = rolesSelect;
-  final hobbies = hobbiesMultiSelect;
+  final hobbies = permissionsSelect;
 
   @override
   Iterator<FormValue> get iterator =>
@@ -161,7 +162,7 @@ class SignUpScreen extends ConsumerWidget {
                 },
               ),
               FilledButton(
-                onPressed: state.isValid
+                onPressed: state.isValid == true
                     ? () {
                         final result = state.model.validateThenGetResult(ref);
                         final String message = result != null
@@ -171,7 +172,9 @@ class SignUpScreen extends ConsumerWidget {
                             .showSnackBar(SnackBar(content: Text(message)));
                       }
                     : null,
-                child: Text(state.isValid ? 'Submit' : 'Fix errors first'),
+                child: Text(
+                  state.isValid == true ? 'Submit' : 'Fix errors first',
+                ),
               ),
             ],
           ),

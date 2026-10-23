@@ -7,7 +7,6 @@ typedef MultiFormValueProviderArgs = (String, MultiFormValue<dynamic, dynamic>);
 
 final class MultiFormValue<T, ERROR>
     extends FormValue<List<T>, ERROR, FormMultipleValueState<T, ERROR>> {
-
   MultiFormValue({
     super.initial,
     super.isEnabled,
@@ -43,4 +42,9 @@ final class MultiFormValue<T, ERROR>
       ref.read(multiFormValueProvider((key, this))).as<T, ERROR>();
 
   final AsyncValue<List<T>> Function(Ref ref) values;
+
+  @override
+  void validateW(WidgetRef ref) {
+    ref.read(_provider.notifier).validate();
+  }
 }

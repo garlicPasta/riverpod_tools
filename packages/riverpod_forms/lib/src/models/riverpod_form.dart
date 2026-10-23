@@ -9,8 +9,7 @@ part 'single_form_value.dart';
 
 typedef ValidFormSnapshot = Map<String, dynamic>;
 
-abstract class RiverpodForm<RESULT>
-    extends Iterable<FormValue<dynamic, dynamic, dynamic>> {
+abstract class RiverpodForm<RESULT> extends Iterable<FormValue> {
   @protected
   @visibleForOverriding
   RESULT getResult(ValidFormSnapshot snapshot);
@@ -18,9 +17,9 @@ abstract class RiverpodForm<RESULT>
   RiverpodForm();
 
   ValidFormSnapshot? _validSnapshot(WidgetRef ref) {
-    var entries = this.map((value) {
+    var entries = this.map((FormValue value) {
       var s = value.readW(ref);
-      if (s.isValid) {
+      if (s.isValid == true) {
         return MapEntry(value.key, s.value);
       } else {
         return null;
@@ -32,7 +31,8 @@ abstract class RiverpodForm<RESULT>
     return Map.fromEntries(entries.nonNulls);
   }
 
-  void validate(WidgetRef ref) => forEach((field) => field.validator);
+  void validateFields(WidgetRef ref) =>
+      forEach((field) => field.validateW(ref));
 
   @nonVirtual
   RESULT? validateThenGetResult(WidgetRef ref) =>
@@ -41,7 +41,7 @@ abstract class RiverpodForm<RESULT>
 
 final class RiverpodFormState<MODEL extends RiverpodForm>(
   final MODEL model,
-  final bool isValid,
+  final bool? isValid,
 ) extends Equatable {
   @override
   List<Object?> get props => [model, isValid];

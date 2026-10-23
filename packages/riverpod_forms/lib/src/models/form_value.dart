@@ -7,12 +7,11 @@ import 'package:uuid/uuid.dart';
 
 var _uuid = Uuid();
 
-abstract class FormValue<VALUE, ERROR, STATE extends Object>({
-  this.validator,
-  this.initial,
-  this.isEnabled,
-  this.isVisible,
-}) {
+abstract class FormValue<
+  VALUE,
+  ERROR,
+  STATE extends FormValueState<VALUE, ERROR>
+>({this.validator, this.initial, this.isEnabled, this.isVisible}) {
   static FormValue<VALUE, ERROR, SingleFormValueState<VALUE, ERROR>>
   single<VALUE, ERROR>({
     Validator<VALUE, ERROR>? validator,
@@ -32,10 +31,10 @@ abstract class FormValue<VALUE, ERROR, STATE extends Object>({
   late Function(VALUE? value) setValue;
   final String key = _uuid.v4();
 
-  STATE watch(Ref ref);
+  FormValueState<VALUE, ERROR> watch(Ref ref);
 
   void validate(Ref ref);
-
+  void validateW(WidgetRef ref);
   VALUE? watchValue(Ref ref);
 
   STATE watchW(WidgetRef ref);

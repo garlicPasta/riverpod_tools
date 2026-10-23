@@ -55,7 +55,11 @@ class _RiverpodChoiceChipsState<T, E>
   @override
   Widget build(BuildContext context) => widget.state.values.when(
     error: (err, st) => Text('Error: $err'),
-    loading: () => CircularProgressIndicator(),
+    loading: () => Center(
+      child: const CircularProgressIndicator(
+        constraints: BoxConstraints.tightFor(width: 16, height: 16),
+      ),
+    ),
     data: (values) => Column(
       mainAxisSize: MainAxisSize.min,
       children: [

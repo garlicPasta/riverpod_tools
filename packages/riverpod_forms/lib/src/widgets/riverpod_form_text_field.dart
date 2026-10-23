@@ -61,16 +61,19 @@ class _RiverpodTextState<E> extends State<_RiverpodText<E>> {
     }
   }
 
+  Widget get loader => const CircularProgressIndicator(
+    constraints: BoxConstraints.tightFor(width: 16, height: 16),
+  );
+
   @override
   Widget build(BuildContext context) => TextField(
-    enabled: widget.state.isEnabled,
+    enabled: widget.state.isEnabled && !widget.state.isInitializing,
     controller: controller,
     onChanged: widget.setValue,
     decoration: (widget.decoration ?? InputDecoration()).copyWith(
       suffix: switch (widget.state.error) {
-        ValidationInProgress<E>() => const CircularProgressIndicator(
-          constraints: BoxConstraints.tightFor(width: 16, height: 16),
-        ),
+        ValidationInProgress<E>() => loader,
+        _ when widget.state.isInitializing => loader,
         _ => null,
       },
       errorText: widget.state.isDirty
@@ -82,6 +85,7 @@ class _RiverpodTextState<E> extends State<_RiverpodText<E>> {
                   widget.errorMapping?.call(error) ?? '',
                 ValidationException<E>() => 'Validation failed',
               },
+              null => null,
             }
           : null,
     ),

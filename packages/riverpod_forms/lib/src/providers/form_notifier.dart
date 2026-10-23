@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_forms/riverpod_forms.dart';
+import 'package:riverpod_forms/src/models/single_form_value_state.dart';
 
 typedef FormProvider<FORM extends RiverpodForm> =
     NotifierProvider<FormNotifier<FORM>, RiverpodFormState<FORM>>;
@@ -26,11 +27,15 @@ class FormNotifier<MODEL extends RiverpodForm>
 
   @override
   RiverpodFormState<MODEL> build() {
-    final values = model.map((config) => config.watch(ref)).toList();
+    final Iterable<bool?> isValidList = model
+        .map((formValue) => formValue.watch(ref))
+        .map((FormValueState value) => value.isValid);
 
     return RiverpodFormState<MODEL>(
       model,
-      values.every((value) => value.isValid),
+      isValidList.any((v) => v == null)
+          ? null
+          : isValidList.every((v) => v == true),
     );
   }
 }

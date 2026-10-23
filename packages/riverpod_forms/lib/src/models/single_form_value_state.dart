@@ -8,8 +8,9 @@ abstract class FormValueState<VALUE, ERROR>({
   final bool isVisible = true,
   required final bool isInitializing,
   final VALUE? value,
-  final ValidationState<ERROR> error = const ValidationSuccess(),
+  final ValidationState<ERROR>? error,
 }) extends Equatable {
+  bool? get isValid => error == null ? null : error is ValidationSuccess<ERROR>;
   @override
   List<Object?> get props => [
     isDirty,
@@ -31,13 +32,11 @@ class SingleFormValueState<VALUE, ERROR>({
   final AsyncValue<List<VALUE>>? values,
   final AsyncValue<List<VALUE>>? suggestions,
 }) extends FormValueState<VALUE, ERROR> {
-  bool get isValid => error is ValidationSuccess<ERROR>;
-
   SingleFormValueState<T, E> as<T, E>() => SingleFormValueState<T, E>(
     isDirty: isDirty,
     isEnabled: isEnabled,
     isVisible: isVisible,
-    error: error.as<E>(),
+    error: error?.as<E>(),
     value: value as T?,
     values: values as AsyncValue<List<T>>?,
     suggestions: suggestions as AsyncValue<List<T>>?,
@@ -54,8 +53,6 @@ class FormMultipleValueState<VALUE, ERROR>({
   final ValidationState<ERROR> error = const ValidationSuccess(),
   final List<VALUE>? value,
 }) extends FormValueState<List<VALUE>, ERROR> {
-  bool get isValid => error is ValidationSuccess<ERROR>;
-
   FormMultipleValueState<T, E> as<T, E>() => FormMultipleValueState<T, E>(
     isDirty: isDirty,
     isEnabled: isEnabled,

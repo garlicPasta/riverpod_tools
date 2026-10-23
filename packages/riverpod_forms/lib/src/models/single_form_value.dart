@@ -41,4 +41,9 @@ final class SingleFormValue<VALUE, ERROR>
       ref.read(formValueProvider(_params)).as<VALUE, ERROR>();
 
   final AsyncValue<List<VALUE>> Function(Ref ref)? values;
+
+  @override
+  void validateW(WidgetRef ref) {
+    ref.read(_provider.notifier).validate();
+  }
 }

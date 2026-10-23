@@ -2,17 +2,13 @@ import 'dart:async';
 
 extension FutureOrExtension<T> on FutureOr<T> {
   void handle({
-    required void Function() beforeValue,
-    required void Function(T value) onValue,
-    required void Function(Object error)? onError,
+    required void Function(T value) whenValue,
+    required void Function(Future<T> value) whenFuture,
   }) {
     if (this is Future<T>) {
-      beforeValue();
-      (this as Future<T>).then(onValue).catchError((e) {
-        onError?.call(e);
-      });
+      whenFuture(this as Future<T>);
     } else {
-      onValue(this as T);
+      whenValue(this as T);
     }
   }
 }
