@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_forms/riverpod_forms.dart';
-import 'package:riverpod_forms/src/models/single_form_value_state.dart';
+import 'package:riverpod_forms/src/models/form_value_state.dart';
 
 typedef FormProvider<FORM extends RiverpodForm> =
     NotifierProvider<FormNotifier<FORM>, RiverpodFormState<FORM>>;

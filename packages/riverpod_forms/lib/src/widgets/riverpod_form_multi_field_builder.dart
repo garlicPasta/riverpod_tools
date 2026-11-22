@@ -1,21 +1,22 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:riverpod_forms/src/models/form_multiple_value_proxy.dart';
-import 'package:riverpod_forms/src/models/single_form_value_state.dart';
+import 'package:riverpod_forms/src/models/form_multiple_value.dart';
+import 'package:riverpod_forms/src/models/form_value_state.dart';
 
-typedef RiverpodFormMultiFieldBuilderCallback<VALUE, ERROR> = Widget Function(
-  BuildContext context,
-  FormMultipleValueState<VALUE, ERROR> state,
-  void Function(List<VALUE>? value) setValue,
+class FormListSetter<VALUE>(
+  final void Function(List<VALUE> value) setValue,
+  final void Function(VALUE value) addValue,
+  final void Function(VALUE value) removeValue,
+  final void Function() clear,
 );
 
-class RiverpodFormMultiFieldBuilder<VAlUE, ERROR> extends ConsumerWidget {
-  final MultiFormValue<VAlUE, ERROR> valueProxy;
+class RiverpodFormMultiFieldBuilder<VALUE, ERROR> extends ConsumerWidget {
+  final MultiFormValue<VALUE, ERROR> valueProxy;
 
   final Widget Function(
     BuildContext context,
-    FormMultipleValueState<VAlUE, ERROR> formValueState,
-    void Function(List<VAlUE>? value) setValue,
+    FormMultipleValuesState<VALUE, ERROR> formValueState,
+    FormListSetter<VALUE> setter,
   )
   builder;
 
@@ -31,18 +32,27 @@ class RiverpodFormMultiFieldBuilder<VAlUE, ERROR> extends ConsumerWidget {
     if (!state.isVisible) {
       return const SizedBox.shrink();
     }
-    return builder(context, state, valueProxy.setValue);
+    return builder(
+      context,
+      state,
+      FormListSetter(
+        valueProxy.setValue,
+        valueProxy.addValue,
+        valueProxy.removeValue,
+        valueProxy.clear,
+      ),
+    );
   }
 }
 
 abstract class RiverpodFormMultiFieldHandler<VALUE, ERROR>
     extends StatefulWidget {
-  final FormMultipleValueState<VALUE, ERROR> state;
-  final void Function(List<VALUE>? value) setValue;
+  final FormMultipleValuesState<VALUE, ERROR> state;
+  final FormListSetter<VALUE> setter;
 
   const RiverpodFormMultiFieldHandler({
     super.key,
     required this.state,
-    required this.setValue,
+    required this.setter,
   });
 }

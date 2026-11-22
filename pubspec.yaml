@@ -12,3 +12,4 @@ dev_dependencies:
 workspace:
   - packages/riverpod_forms
   - packages/async_value_tools
+  - packages/riverpod_forms_extras

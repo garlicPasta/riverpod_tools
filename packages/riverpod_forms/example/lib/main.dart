@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart' hide FormState;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_ui/material_ui.dart' hide FormState;
 import 'package:riverpod_forms/riverpod_forms.dart';
 
 final checkIfEmailIsTaken = FutureProvider.family<bool, String>(
@@ -47,7 +47,7 @@ final rightsProvider = FutureProvider<List<String>>(
 );
 
 final permissionsSelect = MultiFormValue(
-  values: (ref) => ref.watch(rightsProvider),
+  options: .riverpod((ref) => ref.watch(rightsProvider)),
   validator: isRequired<List<String>>().and(sizeLessThan<String>(1)),
 );
 

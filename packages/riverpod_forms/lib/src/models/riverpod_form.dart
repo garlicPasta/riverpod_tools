@@ -2,10 +2,10 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:meta/meta.dart';
 import 'package:riverpod_forms/riverpod_forms.dart';
-import 'package:riverpod_forms/src/models/single_form_value_state.dart';
+import 'package:riverpod_forms/src/models/form_value_state.dart';
 import 'package:riverpod_forms/src/providers/single_form_value_notifier.dart';
 
-part 'single_form_value.dart';
+part 'form_single_value.dart';
 
 typedef ValidFormSnapshot = Map<String, dynamic>;
 
@@ -25,6 +25,7 @@ abstract class RiverpodForm<RESULT> extends Iterable<FormValue> {
         return null;
       }
     });
+
     if (entries.any((e) => e == null)) {
       return null;
     }
@@ -32,11 +33,16 @@ abstract class RiverpodForm<RESULT> extends Iterable<FormValue> {
   }
 
   void validateFields(WidgetRef ref) =>
-      forEach((field) => field.validateW(ref));
+      forEach((field) => field.enableValidateW(ref));
+
+  void markDirty(WidgetRef ref) => forEach((field) => field.markDirtyW(ref));
 
   @nonVirtual
-  RESULT? validateThenGetResult(WidgetRef ref) =>
-      whenNull(_validSnapshot(ref), then: getResult);
+  RESULT? validateThenGetResult(WidgetRef ref) {
+    validateFields(ref);
+    markDirty(ref);
+    return whenNull(_validSnapshot(ref), then: getResult);
+  }
 }
 
 final class RiverpodFormState<MODEL extends RiverpodForm>(

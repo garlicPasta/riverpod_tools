@@ -1,7 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:riverpod_forms/riverpod_forms.dart';
-import 'package:riverpod_forms/src/widgets/riverpod_form_multi_field_builder.dart';
 
 class RiverpodFormMultiselectChips<T, E> extends StatelessWidget {
   final MultiFormValue<T, E> valueProxy;
@@ -18,11 +17,11 @@ class RiverpodFormMultiselectChips<T, E> extends StatelessWidget {
   @override
   Widget build(BuildContext context) => RiverpodFormMultiFieldBuilder<T, E>(
     valueProxy: valueProxy,
-    builder: (context, state, setValue) => _RiverpodChoiceChips<T, E>(
+    builder: (context, state, setter) => _RiverpodChoiceChips<T, E>(
       errorMapping: errorMapping,
       labelMapping: labelMapping!,
       state: state,
-      setValue: setValue,
+      setter: setter,
     ),
   );
 }
@@ -36,7 +35,7 @@ class _RiverpodChoiceChips<T, E> extends RiverpodFormMultiFieldHandler<T, E> {
     required this.labelMapping,
     this.errorMapping,
     required super.state,
-    required super.setValue,
+    required super.setter,
   });
 
   @override
@@ -48,12 +47,11 @@ class _RiverpodChoiceChipsState<T, E>
   @override
   void didUpdateWidget(covariant _RiverpodChoiceChips<T, E> oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.state.value != widget.state.value &&
-        widget.state.value != null) {}
+    if (oldWidget.state.value != widget.state.value) {}
   }
 
   @override
-  Widget build(BuildContext context) => widget.state.values.when(
+  Widget build(BuildContext context) => widget.state.options.when(
     error: (err, st) => Text('Error: $err'),
     loading: () => Center(
       child: const CircularProgressIndicator(
@@ -66,20 +64,20 @@ class _RiverpodChoiceChipsState<T, E>
         Wrap(
           spacing: 4,
           children: values.map((v) {
-            final selected = widget.state.value?.contains(v) ?? false;
+            final selected = widget.state.value.contains(v);
             return ChoiceChip(
               label: Text(widget.labelMapping(v)),
               onSelected: widget.state.isEnabled
                   ? (isSelect) {
-                      final currentValue = widget.state.value ?? <T>[];
+                      final currentValue = widget.state.value;
                       if (isSelect) {
                         if (!currentValue.contains(v)) {
-                          widget.setValue([...currentValue, v]);
+                          widget.setter.setValue([...currentValue, v]);
                         }
                         return;
                       }
 
-                      widget.setValue(
+                      widget.setter.setValue(
                         currentValue.where((item) => item != v).toList(),
                       );
                     }

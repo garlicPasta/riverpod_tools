@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:riverpod_forms/src/models/riverpod_form.dart';
 import 'package:riverpod_forms/src/models/validation_result.dart';
 import 'package:riverpod_forms/src/widgets/riverpod_form_field_builder.dart';
@@ -76,7 +76,7 @@ class _RiverpodTextState<E> extends State<_RiverpodText<E>> {
         _ when widget.state.isInitializing => loader,
         _ => null,
       },
-      errorText: widget.state.isDirty
+      errorText: (widget.state.isDirty)
           ? switch (widget.state.error) {
               ValidationInProgress<E>() => null,
               ValidationSuccess<E>() => null,

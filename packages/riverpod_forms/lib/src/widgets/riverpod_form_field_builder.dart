@@ -1,21 +1,21 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_forms/src/models/form_value.dart';
-import 'package:riverpod_forms/src/models/single_form_value_state.dart';
+import 'package:riverpod_forms/src/models/form_value_state.dart';
 
 typedef RiverpodFormFieldBuilderCallback<VALUE, ERROR> = Widget Function(
   BuildContext context,
-  SingleFormValueState<VALUE, ERROR> state,
-  void Function(VALUE? value) setValue,
+  FormSingleValueState<VALUE, ERROR> state,
+  void Function(VALUE value) setValue,
 );
 
 class RiverpodFormFieldBuilder<VAlUE, ERROR> extends ConsumerWidget {
-  final FormValue<VAlUE, ERROR, SingleFormValueState<VAlUE, ERROR>> valueProxy;
+  final FormValue<VAlUE?, ERROR, FormSingleValueState<VAlUE, ERROR>> valueProxy;
 
   final Widget Function(
     BuildContext context,
-    SingleFormValueState<VAlUE, ERROR> state,
-    void Function(VAlUE? value) setValue,
+    FormSingleValueState<VAlUE, ERROR> state,
+    void Function(VAlUE value) setValue,
   )
   builder;
 
@@ -27,13 +27,13 @@ class RiverpodFormFieldBuilder<VAlUE, ERROR> extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    SingleFormValueState<VAlUE, ERROR> state = valueProxy.watchW(ref);
+    FormSingleValueState<VAlUE, ERROR> state = valueProxy.watchW(ref);
     return builder(context, state, valueProxy.setValue);
   }
 }
 
 abstract class RiverpodFormFieldHandler<VALUE, ERROR> extends StatefulWidget {
-  final SingleFormValueState<VALUE, ERROR> state;
+  final FormSingleValueState<VALUE, ERROR> state;
   final void Function(VALUE) setValue;
 
   const RiverpodFormFieldHandler({

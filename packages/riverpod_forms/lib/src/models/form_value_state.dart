@@ -22,7 +22,7 @@ abstract class FormValueState<VALUE, ERROR>({
   ];
 }
 
-class SingleFormValueState<VALUE, ERROR>({
+class FormSingleValueState<VALUE, ERROR>({
   required super.isDirty,
   required super.isInitializing,
   super.isEnabled,
@@ -32,34 +32,34 @@ class SingleFormValueState<VALUE, ERROR>({
   final AsyncValue<List<VALUE>>? values,
   final AsyncValue<List<VALUE>>? suggestions,
 }) extends FormValueState<VALUE, ERROR> {
-  SingleFormValueState<T, E> as<T, E>() => SingleFormValueState<T, E>(
+  FormSingleValueState<T, E> as<T, E>() => FormSingleValueState<T, E>(
     isDirty: isDirty,
     isEnabled: isEnabled,
     isVisible: isVisible,
     error: error?.as<E>(),
     value: value as T?,
-    values: values as AsyncValue<List<T>>?,
-    suggestions: suggestions as AsyncValue<List<T>>?,
+    values: values?.whenData((v) => v.cast<T>()),
+    suggestions: suggestions?.whenData((v) => v.cast<T>()),
     isInitializing: isInitializing,
   );
 }
 
-class FormMultipleValueState<VALUE, ERROR>({
+class FormMultipleValuesState<VALUE, ERROR>({
   required super.isDirty,
   required super.isInitializing,
   super.isEnabled,
   super.isVisible,
-  required final AsyncValue<List<VALUE>> values,
+  final AsyncValue<List<VALUE>> options = const AsyncValue.data([]),
   final ValidationState<ERROR> error = const ValidationSuccess(),
-  final List<VALUE>? value,
+  final List<VALUE> value = const [],
 }) extends FormValueState<List<VALUE>, ERROR> {
-  FormMultipleValueState<T, E> as<T, E>() => FormMultipleValueState<T, E>(
+  FormMultipleValuesState<T, E> as<T, E>() => FormMultipleValuesState<T, E>(
     isDirty: isDirty,
     isEnabled: isEnabled,
     isVisible: isVisible,
     isInitializing: isInitializing,
     error: error.as<E>(),
-    value: value as List<T>?,
-    values: values as AsyncValue<List<T>>,
+    value: value.cast<T>(),
+    options: options.whenData((v) => v.cast<T>()),
   );
 }
