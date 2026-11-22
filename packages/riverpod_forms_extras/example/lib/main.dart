@@ -5,6 +5,19 @@ import 'package:riverpod_forms_extras/riverpod_forms_extras.dart';
 
 final titleField = makeTextField(validator: isRequired<String>());
 
+final periodField = makeDateRangeField(
+  validator: isRequired<DateTimeRange>()
+      .and(
+        dateRangeContains(
+          DateTimeRange(
+            start: DateTime.now(),
+            end: DateTime.now().add(Duration(days: 1)),
+          ),
+        ),
+      )
+      .and(durationIsShorterThan(Duration(days: 7))),
+);
+
 final attachmentsField = makeFilePickField<IsRequired>(
   validator: isRequired<List<PickedFile>>(),
 );
@@ -13,18 +26,25 @@ final FormProvider<UploadForm> uploadFormProvider = makeFormProvider(
   UploadForm(),
 );
 
-class UploadFormResult(final String title, final List<PickedFile> attachments);
+class UploadFormResult(
+  final String title,
+  final DateTimeRange period,
+  final List<PickedFile> attachments,
+);
 
 class UploadForm extends RiverpodForm<UploadFormResult> {
   final title = titleField;
+  final period = periodField;
   final attachments = attachmentsField;
 
   @override
-  Iterator<FormValue> get iterator => <FormValue>[title, attachments].iterator;
+  Iterator<FormValue> get iterator =>
+      <FormValue>[title, period, attachments].iterator;
 
   @override
   UploadFormResult getResult(snapshot) => UploadFormResult(
     title.getValid(snapshot),
+    period.getValid(snapshot),
     attachments.getValid(snapshot),
   );
 }
@@ -62,7 +82,16 @@ class UploadScreen extends ConsumerWidget {
                 valueProxy: state.model.title,
                 errorMapping: (_) => 'Title is required',
               ),
-              FilePicker(field: state.model.attachments),
+              RiverpodFormDateRangePicker(
+                decoration: const InputDecoration(labelText: 'Period'),
+                valueProxy: state.model.period,
+                errorMapping: (e) => e.on(
+                  on0: (IsRequired e) => 'Is required',
+                  on1: (DateRangeDoesNotContain e) => 'Doe not contain',
+                  on2: (DurationLongerThan e) => 'Is too long',
+                ),
+              ),
+              RiverpodFormFilePicker(field: state.model.attachments),
               FilledButton(
                 onPressed: () {
                   final result = state.model.validateThenGetResult(ref);
@@ -70,9 +99,8 @@ class UploadScreen extends ConsumerWidget {
                       ? 'Ready to upload ${result.attachments.length} file(s) '
                             'for "${result.title}"'
                       : 'Form is invalid';
-                  ScaffoldMessenger.of(
-                    context,
-                  ).showSnackBar(SnackBar(content: Text(message)));
+                  ScaffoldMessenger.of(context)
+                      .showSnackBar(SnackBar(content: Text(message)));
                 },
                 child: const Text('Submit'),
               ),

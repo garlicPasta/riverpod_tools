@@ -1,5 +1,7 @@
 library riverpod_forms;
 
+export 'src/fields/date_range_field.dart';
+export 'src/fields/text_field.dart';
 export 'src/models/form_multiple_value.dart';
 export 'src/models/form_value.dart';
 export 'src/models/riverpod_form.dart';
@@ -9,11 +11,12 @@ export 'src/providers/form_notifier.dart';
 export 'src/typedefs.dart';
 export 'src/utils/async_debouncer.dart';
 export 'src/utils/functional_helpers.dart';
-export 'src/fields/text_field.dart';
+export 'src/validators/date_range_validators.dart';
 export 'src/validators/list_validators.dart';
 export 'src/validators/string_validators.dart';
 export 'src/validators/value_validators.dart';
 export 'src/widgets/riverpod_form_choice_chips.dart';
+export 'src/widgets/riverpod_form_date_range_picker.dart';
 export 'src/widgets/riverpod_form_field_builder.dart';
 export 'src/widgets/riverpod_form_multi_field_builder.dart';
 export 'src/widgets/riverpod_form_multiselect_chips.dart';

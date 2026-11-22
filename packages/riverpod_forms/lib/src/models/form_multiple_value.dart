@@ -26,6 +26,10 @@ final class MultiFormValue<T, ERROR>
     };
   }
 
+  @override
+  AsyncValue<ERROR?> validateDynamic(Ref ref, dynamic val) =>
+      super.validateDynamic(ref, val is List ? val.cast<T>() : val);
+
   late Function(T value) addValue;
   late Function(T value) removeValue;
   late Function() clear;

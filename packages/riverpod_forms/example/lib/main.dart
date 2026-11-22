@@ -48,7 +48,7 @@ final rightsProvider = FutureProvider<List<String>>(
 
 final permissionsSelect = MultiFormValue(
   options: .riverpod((ref) => ref.watch(rightsProvider)),
-  validator: isRequired<List<String>>().and(sizeLessThan<String>(1)),
+  validator: isRequired<List<String>>().and(listLengthBiggerThan<String>(1)),
 );
 
 final FormProvider<SignUpForm> signUpFormProvider = makeFormProvider(
@@ -157,8 +157,14 @@ class SignUpScreen extends ConsumerWidget {
                 labelMapping: (hobby) => hobby,
                 errorMapping: (error) => switch (error) {
                   Validator2_0Failed(error: IsRequired _) => '',
-                  Validator2_1Failed(error: ListSizeLessThan error) =>
-                    'Select at least ${error.size} hobbies',
+                  Validator2_1Failed<
+                    List<String>,
+                    IsRequired,
+                    ListLengthLessThan
+                  >(
+                    :ListLengthLessThan error,
+                  ) =>
+                    '${error.size}',
                 },
               ),
               FilledButton(

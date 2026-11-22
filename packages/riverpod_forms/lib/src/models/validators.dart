@@ -11,11 +11,13 @@ typedef ValueValidator<VALUE, ERROR> = AsyncValue<ERROR?> Function(
 sealed class Validator<T, ERROR> {
   const Validator._();
 
-  static SyncValidator<T, ERROR> sync<T, ERROR>(ERROR? Function(T? value) validate) =>
-      SyncValidator<T, ERROR>(validate);
+  static SyncValidator<T, ERROR> sync<T, ERROR>(
+    ERROR? Function(T? value) validate,
+  ) => SyncValidator<T, ERROR>(validate);
 
-  static AsyncValidator<T, ERROR> async<T, ERROR>(Future<ERROR?> Function(T value) validate) =>
-      AsyncValidator<T, ERROR>(validate);
+  static AsyncValidator<T, ERROR> async<T, ERROR>(
+    Future<ERROR?> Function(T value) validate,
+  ) => AsyncValidator<T, ERROR>(validate);
 
   static RiverpodValidator<T, ERROR> riverpod<T, ERROR>(
     AsyncValue<ERROR?> Function(Ref ref, T? value) validate,
@@ -128,7 +130,13 @@ final class CombinedValidator3<T, E0, E1, E2>
           );
 }
 
-sealed class CombinedValidatorResult2<V, E0, E1> {}
+sealed class CombinedValidatorResult2<V, E0, E1> {
+  String on({required String on0(E0 e), required String on1(E1 e)}) =>
+      switch (this) {
+        Validator2_0Failed(:final error) => on0(error),
+        Validator2_1Failed(:final error) => on1(error),
+      };
+}
 
 final class Validator2_0Failed<V, E0, E1>
     extends CombinedValidatorResult2<V, E0, E1> {
@@ -142,7 +150,17 @@ final class Validator2_1Failed<V, E0, E1>
   Validator2_1Failed(this.error);
 }
 
-sealed class CombinedValidatorResult3<V, E0, E1, E2> {}
+sealed class CombinedValidatorResult3<V, E0, E1, E2> {
+  String on({
+    required String on0(E0 e),
+    required String on1(E1 e),
+    required String on2(E2 e),
+  }) => switch (this) {
+    Validator3_0Failed(:final error) => on0(error),
+    Validator3_1Failed(:final error) => on1(error),
+    Validator3_2Failed(:final error) => on2(error),
+  };
+}
 
 final class Validator3_0Failed<V, E0, E1, E2>
     extends CombinedValidatorResult3<V, E0, E1, E2> {
