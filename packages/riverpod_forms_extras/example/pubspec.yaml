@@ -1,0 +1,22 @@
+name: riverpod_forms_extras_example
+description: Simple example app for riverpod_forms_extras
+publish_to: 'none'
+
+environment:
+  sdk: ">=3.13.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_riverpod: ">=3.3.0 <3.5.0"
+  material_ui: any
+  riverpod_forms:
+    path: ../../riverpod_forms
+  riverpod_forms_extras:
+    path: ../
+
+dev_dependencies:
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
