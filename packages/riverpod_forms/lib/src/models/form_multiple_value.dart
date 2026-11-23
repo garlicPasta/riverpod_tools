@@ -41,6 +41,18 @@ final class MultiFormValue<T, ERROR, ITEM_ERROR>
   AsyncValue<ERROR?> validateDynamic(Ref ref, dynamic val) =>
       super.validateDynamic(ref, val is List ? val.cast<T>() : val);
 
+  List<AsyncValue<ItemError<T, ITEM_ERROR>?>> validateItemsDynamic(
+    Ref ref,
+    List<dynamic> val,
+  ) {
+    final validator = itemValidator;
+    if (validator == null) {
+      return [];
+    }
+    final normalizedValidator = validator.normalize;
+    return val.map((v) => normalizedValidator(ref, v)).toList();
+  }
+
   late Function(T value) addValue;
   late Function(T value) removeValue;
   late Function() clear;

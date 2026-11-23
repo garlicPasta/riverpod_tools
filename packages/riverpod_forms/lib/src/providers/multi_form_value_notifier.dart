@@ -34,21 +34,29 @@ final class MultiFormValueNotifier<VALUE, ERROR, ITEM_ERROR>
   AsyncValue<dynamic> _validateDynamic(Ref ref, dynamic value) =>
       proxy.validateDynamic(ref, value);
 
+  List<AsyncValue<dynamic>> _validateItemsDynamic(
+    Ref ref,
+    List<dynamic> value,
+  ) => proxy.validateItemsDynamic(ref, value);
+
   void addValue(VALUE v) {
     value = [...value, v];
     isDirty = true;
+    validateField = true;
     ref.invalidateSelf();
   }
 
   void removeValue(VALUE v) {
     value = value.where((e) => e != v).toList();
     isDirty = true;
+    validateField = true;
     ref.invalidateSelf();
   }
 
   void clear() {
     value = [];
     isDirty = true;
+    validateField = true;
     ref.invalidateSelf();
   }
 
@@ -65,6 +73,16 @@ final class MultiFormValueNotifier<VALUE, ERROR, ITEM_ERROR>
             )
           : ValidationSuccess(),
       value: value,
+      itemErrors: validateField
+          ? _validateItemsDynamic(ref, value)
+                .map(
+                  (r) =>
+                      ValidationState.fromAsyncValue<
+                        ItemError<VALUE, ITEM_ERROR>
+                      >(r.as<ItemError<VALUE, ITEM_ERROR>?>()),
+                )
+                .toList()
+          : const [],
       options: proxy.options.call(ref),
     ),
   );

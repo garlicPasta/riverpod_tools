@@ -8,17 +8,15 @@ final periodField = makeDateRangeField(
   validator: isRequired<DateTimeRange>()
       .and(
         dateRangeContains(
-          DateTimeRange(
-            start: DateTime.now(),
-            end: DateTime.now().add(Duration(days: 1)),
-          ),
+          .new(start: .now(), end: .now().add(Duration(days: 1))),
         ),
       )
-      .and(durationIsShorterThan(Duration(days: 7))),
+      .and(durationIsShorterThan(.new(days: 7))),
 );
 
 final attachmentsField = makeFilePickField(
-  validator: isRequired<List<PickedFile>>().and(filesSmallerThan(1024)),
+  validator: isRequired<List<PickedFile>>(),
+  itemValidator: filesSmallerThan(.megaBytes(1)),
 );
 
 final FormProvider<UploadForm> uploadFormProvider = makeFormProvider(
@@ -92,15 +90,8 @@ class UploadScreen extends ConsumerWidget {
               ),
               RiverpodFormFilePicker(
                 field: state.model.attachments,
-                itemErrorMapping: (context, error) => error.error.on(
-                  on0: (_) => null,
-                  on1: (EqualList<ItemError<PickedFile, FileBiggerThan>> e) =>
-                      '${error.item.name} is bigger than ${e.items.first.error.size}',
-                ),
-                listErrorMapping: (context, error) => error.on(
-                  on0: (IsRequired s) => 'Required',
-                  on1: (s) => null,
-                ),
+                itemErrorMapping: (context, error) => 'invalid size',
+                listErrorMapping: (context, error) => 'required',
               ),
               FilledButton(
                 onPressed: () {

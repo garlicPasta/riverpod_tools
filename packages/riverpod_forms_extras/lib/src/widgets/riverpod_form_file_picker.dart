@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:material_ui/material_ui.dart';
 import 'package:riverpod_forms/riverpod_forms.dart';
 import 'package:riverpod_forms/src/models/form_value_state.dart';
@@ -7,17 +5,17 @@ import 'package:riverpod_forms_extras/src/fields/file_select_field.dart';
 import 'package:riverpod_forms_extras/src/models/picked_file.dart';
 import 'package:riverpod_forms_extras/src/utils/file_manager.dart';
 
-typedef PickedFileBuilder<ERR> = Widget Function(
+typedef PickedFileBuilder<ITEM_ERR> = Widget Function(
   BuildContext context,
   PickedFile file,
   VoidCallback remove,
-  ItemError<PickedFile, ERR>? error,
+  ItemError<PickedFile, ITEM_ERR>? error,
 );
 
 class RiverpodFormFilePicker<ERR, ITEM_ERR> extends StatelessWidget {
   final FilePickField<ERR, ITEM_ERR> field;
-  final PickedFileBuilder<ERR>? fileBuilder;
-  final ItemErrorMapper<PickedFile, ERR>? itemErrorMapping;
+  final PickedFileBuilder<ITEM_ERR>? fileBuilder;
+  final ItemErrorMapper<PickedFile, ITEM_ERR>? itemErrorMapping;
   final ErrorMapper<ERR> listErrorMapping;
 
   const RiverpodFormFilePicker({
@@ -32,14 +30,14 @@ class RiverpodFormFilePicker<ERR, ITEM_ERR> extends StatelessWidget {
     BuildContext context,
     PickedFile file,
     VoidCallback remove,
-    ItemError<PickedFile, ERR>? error,
+    ItemError<PickedFile, ITEM_ERR>? error,
   ) {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(file.name),
         IconButton(icon: Icon(Icons.close), onPressed: remove),
-        ?notNull<ItemError<PickedFile, ERR>, Widget?>(
+        ?notNull<ItemError<PickedFile, ITEM_ERR>, Widget?>(
           error,
           then: (e) => Text(itemErrorMapping?.call(context, e) ?? ''),
         ),
@@ -51,20 +49,10 @@ class RiverpodFormFilePicker<ERR, ITEM_ERR> extends StatelessWidget {
     BuildContext context,
     PickedFile file,
     VoidCallback remove,
-    ItemError<PickedFile, ERR>? error,
+    ItemError<PickedFile, ITEM_ERR>? error,
   ) {
-    PickedFileBuilder<ERR> b = fileBuilder ?? _defaultFileBuilder;
+    PickedFileBuilder<ITEM_ERR> b = fileBuilder ?? _defaultFileBuilder;
     return b(context, file, remove, error);
-  }
-
-  ItemError<PickedFile, ERR>? filterItemError(PickedFile f, ERR e) {
-    log('filterItemError $f - $e');
-    if (e is ListItemError<PickedFile, ERR>) {
-      log('filterItemError $f');
-      return e.items.firstWhere((i) => i.item == f);
-    } else {
-      return null;
-    }
   }
 
   @override
@@ -95,10 +83,11 @@ class RiverpodFormFilePicker<ERR, ITEM_ERR> extends StatelessWidget {
                     context,
                     file,
                     () => setter.removeValue(file),
-                    notNull<ERR, ItemError<PickedFile, ERR>?>(
-                      state.error.error,
-                      then: (e) => filterItemError(file, e),
-                    ),
+                    state.itemErrors
+                        .map((e) => e.error)
+                        .nonNulls
+                        .where((e) => e.item == file)
+                        .firstOrNull,
                   ),
               ],
             ),

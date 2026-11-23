@@ -55,7 +55,8 @@ class FormMultipleValueState<VALUE, ERROR, ITEM_ERROR>({
   super.isVisible,
   final AsyncValue<List<VALUE>> options = const AsyncValue.data([]),
   final ValidationState<ERROR> error = const ValidationSuccess(),
-  final List<ValidationState<ITEM_ERROR>> itemErrors = const [],
+  final List<ValidationState<ItemError<VALUE, ITEM_ERROR>>> itemErrors =
+      const [],
   final List<VALUE> value = const [],
 }) extends FormValueState<List<VALUE>, ERROR> {
   FormMultipleValueState<VAL, ERR, ITEM_ERR> as<VAL, ERR, ITEM_ERR>() =>
@@ -66,11 +67,16 @@ class FormMultipleValueState<VALUE, ERROR, ITEM_ERROR>({
         isInitializing: isInitializing,
         value: value.cast<VAL>(),
         error: error.as<ERR>(),
-        itemErrors: itemErrors.map((e) => e.as<ITEM_ERR>()).toList(),
+        itemErrors: itemErrors
+            .map((e) => e.as<ItemError<VAL, ITEM_ERR>>())
+            .toList(),
         options: options.whenData((v) => v.cast<VAL>()),
       );
 
   @override
+  List<Object?> get props => [...super.props, itemErrors, options];
+
+  @override
   String toString() =>
-      'FormMultipleValuesState($value) isDirty=$isDirty isEnabled=$isEnabled isVisible=$isVisible isInit=$isInitializing error=$error options=$options';
+      'FormMultipleValuesState($value) isDirty=$isDirty isEnabled=$isEnabled isVisible=$isVisible isInit=$isInitializing error=$error itemErrors=${itemErrors.isEmpty ? 'none' : itemErrors.join(',')} options=$options';
 }
