@@ -42,9 +42,13 @@ class FormSingleValueState<VALUE, ERROR>({
     suggestions: suggestions?.whenData((v) => v.cast<T>()),
     isInitializing: isInitializing,
   );
+
+  @override
+  String toString() =>
+      'FormSingeValuesState($value) isDirty=$isDirty isEnabled=$isEnabled isVisible=$isVisible isInit=$isInitializing error=$error';
 }
 
-class FormMultipleValuesState<VALUE, ERROR>({
+class FormMultipleValueState<VALUE, ERROR>({
   required super.isDirty,
   required super.isInitializing,
   super.isEnabled,
@@ -53,7 +57,7 @@ class FormMultipleValuesState<VALUE, ERROR>({
   final ValidationState<ERROR> error = const ValidationSuccess(),
   final List<VALUE> value = const [],
 }) extends FormValueState<List<VALUE>, ERROR> {
-  FormMultipleValuesState<T, E> as<T, E>() => FormMultipleValuesState<T, E>(
+  FormMultipleValueState<T, E> as<T, E>() => FormMultipleValueState<T, E>(
     isDirty: isDirty,
     isEnabled: isEnabled,
     isVisible: isVisible,

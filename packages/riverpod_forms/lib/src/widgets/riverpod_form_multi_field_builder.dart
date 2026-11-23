@@ -15,7 +15,7 @@ class RiverpodFormMultiFieldBuilder<VALUE, ERROR> extends ConsumerWidget {
 
   final Widget Function(
     BuildContext context,
-    FormMultipleValuesState<VALUE, ERROR> formValueState,
+    FormMultipleValueState<VALUE, ERROR> formValueState,
     FormListSetter<VALUE> setter,
   )
   builder;
@@ -47,7 +47,7 @@ class RiverpodFormMultiFieldBuilder<VALUE, ERROR> extends ConsumerWidget {
 
 abstract class RiverpodFormMultiFieldHandler<VALUE, ERROR>
     extends StatefulWidget {
-  final FormMultipleValuesState<VALUE, ERROR> state;
+  final FormMultipleValueState<VALUE, ERROR> state;
   final FormListSetter<VALUE> setter;
 
   const RiverpodFormMultiFieldHandler({

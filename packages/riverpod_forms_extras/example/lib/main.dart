@@ -92,10 +92,26 @@ class UploadScreen extends ConsumerWidget {
               ),
               RiverpodFormFilePicker(
                 field: state.model.attachments,
-                errorMapping: (context, error) => error.on(
-                  on0: (IsRequired _) => 'Required',
-                  on1: (_) => 'File too big',
+                itemErrorMapping: (context, error) => error.error.on(
+                  on0: (_) => null,
+                  on1: (EqualList<ItemError<PickedFile, FileBiggerThan>> _) =>
+                      '${error.item.name} is too big',
                 ),
+                listErrorMapping:
+                    (
+                      BuildContext context,
+                      CombinedValidatorResult2<
+                        List<PickedFile>,
+                        IsRequired,
+                        EqualIterable<
+                          List<ItemError<PickedFile, FileBiggerThan>>
+                        >
+                      >
+                      error,
+                    ) => error.on(
+                      on0: (IsRequired s) => 'Required',
+                      on1: (s) => null,
+                    ),
               ),
               FilledButton(
                 onPressed: () {

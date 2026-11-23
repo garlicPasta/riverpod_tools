@@ -41,7 +41,7 @@ abstract class RiverpodForm<RESULT> extends Iterable<FormValue> {
   RESULT? validateThenGetResult(WidgetRef ref) {
     validateFields(ref);
     markDirty(ref);
-    return whenNull(_validSnapshot(ref), then: getResult);
+    return notNull(_validSnapshot(ref), then: getResult);
   }
 }
 

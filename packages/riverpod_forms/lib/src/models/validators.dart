@@ -99,7 +99,7 @@ final class CombinedValidator2<T, E0, E1>
               orElse: v1
                   .normalize(ref, value)
                   .whenData(
-                    (v) => whenNull(v, then: Validator2_1Failed<T, E0, E1>.new),
+                    (v) => notNull(v, then: Validator2_1Failed<T, E0, E1>.new),
                   ),
             ),
           );
@@ -119,7 +119,7 @@ final class CombinedValidator3<T, E0, E1, E2>
           .normalize(ref, value)
           .flatMap(
             (v) =>
-                whenNull(
+                notNull(
                   v,
                   then: (v) =>
                       AsyncData<CombinedValidatorResult3<T, E0, E1, E2>?>(
@@ -141,10 +141,12 @@ final class CombinedValidator3<T, E0, E1, E2>
 }
 
 sealed class CombinedValidatorResult2<V, E0, E1> {
-  String on({required String on0(E0 e), required String on1(E1 e)}) =>
+  String? on({required String? on0(E0 e), required String? on1(E1 e)}) =>
       switch (this) {
         Validator2_0Failed(:final error) => on0(error),
-        Validator2_1Failed(:final error) => on1(error),
+        Validator2_1Failed(:final error) => () {
+          return on1(error);
+        }(),
       };
 }
 

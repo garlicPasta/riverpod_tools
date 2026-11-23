@@ -6,6 +6,7 @@ export 'src/models/equal_iterable.dart';
 export 'src/models/error_mapper.dart';
 export 'src/models/form_multiple_value.dart';
 export 'src/models/form_value.dart';
+export 'src/models/multiple_value_error.dart';
 export 'src/models/riverpod_form.dart';
 export 'src/models/validation_result.dart';
 export 'src/models/validators.dart';

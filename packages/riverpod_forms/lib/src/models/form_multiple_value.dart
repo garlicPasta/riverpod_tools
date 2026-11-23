@@ -8,7 +8,7 @@ import 'package:riverpod_forms/src/providers/multi_form_value_notifier.dart';
 typedef MultiFormValueProviderArgs = (String, MultiFormValue<dynamic, dynamic>);
 
 final class MultiFormValue<T, ERROR>
-    extends FormValue<List<T>, ERROR, FormMultipleValuesState<T, ERROR>> {
+    extends FormValue<List<T>, ERROR, FormMultipleValueState<T, ERROR>> {
   MultiFormValue({
     super.initial,
     super.isEnabled,
@@ -34,7 +34,7 @@ final class MultiFormValue<T, ERROR>
   late Function(T value) removeValue;
   late Function() clear;
 
-  FormMultipleValuesState<T, ERROR> watch(Ref ref) =>
+  FormMultipleValueState<T, ERROR> watch(Ref ref) =>
       ref.watch(_provider).as<T, ERROR>();
 
   void enableValidate(Ref ref) {
@@ -43,22 +43,22 @@ final class MultiFormValue<T, ERROR>
 
   NotifierProvider<
     MultiFormValueNotifier,
-    FormMultipleValuesState<dynamic, dynamic>
+    FormMultipleValueState<dynamic, dynamic>
   >
-  get _provider => multiFormValueProvider((id, this));
+  get _provider => formMulipleValueProvider((id, this));
 
   List<T>? watchValue(Ref ref) =>
-      ref.watch(multiFormValueProvider((id, this)).select((s) => s.value))
+      ref.watch(formMulipleValueProvider((id, this)).select((s) => s.value))
           as List<T>?;
 
-  FormMultipleValuesState<T, ERROR> watchW(WidgetRef ref) =>
-      ref.watch(multiFormValueProvider((id, this))).as<T, ERROR>();
+  FormMultipleValueState<T, ERROR> watchW(WidgetRef ref) =>
+      ref.watch(formMulipleValueProvider((id, this))).as<T, ERROR>();
 
-  FormMultipleValuesState<T, ERROR> read(Ref ref) =>
-      ref.read(multiFormValueProvider((id, this))).as<T, ERROR>();
+  FormMultipleValueState<T, ERROR> read(Ref ref) =>
+      ref.read(formMulipleValueProvider((id, this))).as<T, ERROR>();
 
-  FormMultipleValuesState<T, ERROR> readW(WidgetRef ref) =>
-      ref.read(multiFormValueProvider((id, this))).as<T, ERROR>();
+  FormMultipleValueState<T, ERROR> readW(WidgetRef ref) =>
+      ref.read(formMulipleValueProvider((id, this))).as<T, ERROR>();
 
   late final AsyncValue<List<T>> Function(Ref ref) options;
 
