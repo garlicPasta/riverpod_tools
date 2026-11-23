@@ -48,24 +48,27 @@ class FormSingleValueState<VALUE, ERROR>({
       'FormSingeValuesState($value) isDirty=$isDirty isEnabled=$isEnabled isVisible=$isVisible isInit=$isInitializing error=$error';
 }
 
-class FormMultipleValueState<VALUE, ERROR>({
+class FormMultipleValueState<VALUE, ERROR, ITEM_ERROR>({
   required super.isDirty,
   required super.isInitializing,
   super.isEnabled,
   super.isVisible,
   final AsyncValue<List<VALUE>> options = const AsyncValue.data([]),
   final ValidationState<ERROR> error = const ValidationSuccess(),
+  final List<ValidationState<ITEM_ERROR>> itemErrors = const [],
   final List<VALUE> value = const [],
 }) extends FormValueState<List<VALUE>, ERROR> {
-  FormMultipleValueState<T, E> as<T, E>() => FormMultipleValueState<T, E>(
-    isDirty: isDirty,
-    isEnabled: isEnabled,
-    isVisible: isVisible,
-    isInitializing: isInitializing,
-    error: error.as<E>(),
-    value: value.cast<T>(),
-    options: options.whenData((v) => v.cast<T>()),
-  );
+  FormMultipleValueState<VAL, ERR, ITEM_ERR> as<VAL, ERR, ITEM_ERR>() =>
+      FormMultipleValueState<VAL, ERR, ITEM_ERR>(
+        isDirty: isDirty,
+        isEnabled: isEnabled,
+        isVisible: isVisible,
+        isInitializing: isInitializing,
+        value: value.cast<VAL>(),
+        error: error.as<ERR>(),
+        itemErrors: itemErrors.map((e) => e.as<ITEM_ERR>()).toList(),
+        options: options.whenData((v) => v.cast<VAL>()),
+      );
 
   @override
   String toString() =>

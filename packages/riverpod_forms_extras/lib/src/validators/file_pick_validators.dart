@@ -22,10 +22,7 @@ SyncValidator<List<PickedFile>, InvalidFileEnding> allowedFileEndings(
   return null;
 });
 
-AsyncValidator<
-  List<PickedFile>,
-  EqualList<ItemError<PickedFile, FileBiggerThan>>
->
+AsyncValidator<List<PickedFile>, ListItemError<PickedFile, FileBiggerThan>>
 filesSmallerThan(int size) => .new((files) async {
   EqualList<ItemError<PickedFile, FileBiggerThan>>? errors = await files
       ?.map(

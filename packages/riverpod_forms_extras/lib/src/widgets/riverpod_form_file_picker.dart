@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:material_ui/material_ui.dart';
 import 'package:riverpod_forms/riverpod_forms.dart';
 import 'package:riverpod_forms/src/models/form_value_state.dart';
@@ -12,9 +14,9 @@ typedef PickedFileBuilder<ERR> = Widget Function(
   ItemError<PickedFile, ERR>? error,
 );
 
-class RiverpodFormFilePicker<ERR> extends StatelessWidget {
-  final FilePickField<ERR> field;
-  final PickedFileBuilder? fileBuilder;
+class RiverpodFormFilePicker<ERR, ITEM_ERR> extends StatelessWidget {
+  final FilePickField<ERR, ITEM_ERR> field;
+  final PickedFileBuilder<ERR>? fileBuilder;
   final ItemErrorMapper<PickedFile, ERR>? itemErrorMapping;
   final ErrorMapper<ERR> listErrorMapping;
 
@@ -56,7 +58,9 @@ class RiverpodFormFilePicker<ERR> extends StatelessWidget {
   }
 
   ItemError<PickedFile, ERR>? filterItemError(PickedFile f, ERR e) {
+    log('filterItemError $f - $e');
     if (e is ListItemError<PickedFile, ERR>) {
+      log('filterItemError $f');
       return e.items.firstWhere((i) => i.item == f);
     } else {
       return null;
@@ -69,7 +73,7 @@ class RiverpodFormFilePicker<ERR> extends StatelessWidget {
     builder:
         (
           BuildContext context,
-          FormMultipleValueState<PickedFile, ERR> state,
+          FormMultipleValueState<PickedFile, ERR, ITEM_ERR> state,
           FormListSetter<PickedFile> setter,
         ) => Column(
           children: [

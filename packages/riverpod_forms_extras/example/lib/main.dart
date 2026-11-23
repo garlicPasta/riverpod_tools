@@ -94,24 +94,13 @@ class UploadScreen extends ConsumerWidget {
                 field: state.model.attachments,
                 itemErrorMapping: (context, error) => error.error.on(
                   on0: (_) => null,
-                  on1: (EqualList<ItemError<PickedFile, FileBiggerThan>> _) =>
-                      '${error.item.name} is too big',
+                  on1: (EqualList<ItemError<PickedFile, FileBiggerThan>> e) =>
+                      '${error.item.name} is bigger than ${e.items.first.error.size}',
                 ),
-                listErrorMapping:
-                    (
-                      BuildContext context,
-                      CombinedValidatorResult2<
-                        List<PickedFile>,
-                        IsRequired,
-                        EqualIterable<
-                          List<ItemError<PickedFile, FileBiggerThan>>
-                        >
-                      >
-                      error,
-                    ) => error.on(
-                      on0: (IsRequired s) => 'Required',
-                      on1: (s) => null,
-                    ),
+                listErrorMapping: (context, error) => error.on(
+                  on0: (IsRequired s) => 'Required',
+                  on1: (s) => null,
+                ),
               ),
               FilledButton(
                 onPressed: () {

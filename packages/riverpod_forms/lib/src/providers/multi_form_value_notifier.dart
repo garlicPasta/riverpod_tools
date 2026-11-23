@@ -6,19 +6,22 @@ import 'package:riverpod_forms/src/providers/form_value_notifier.dart';
 
 final formMulipleValueProvider =
     NotifierProvider.family<
-      MultiFormValueNotifier<dynamic, dynamic>,
-      FormMultipleValueState<dynamic, dynamic>,
+      MultiFormValueNotifier<dynamic, dynamic, dynamic>,
+      FormMultipleValueState<dynamic, dynamic, dynamic>,
       MultiFormValueProviderArgs
-    >((args) => MultiFormValueNotifier<dynamic, dynamic>(args.$1, args.$2));
+    >(
+      (args) =>
+          MultiFormValueNotifier<dynamic, dynamic, dynamic>(args.$1, args.$2),
+    );
 
-final class MultiFormValueNotifier<VALUE, ERROR>
+final class MultiFormValueNotifier<VALUE, ERROR, ITEM_ERROR>
     extends
         FormValueNotifier<
           List<VALUE>,
           ERROR,
-          FormMultipleValueState<VALUE, ERROR>
+          FormMultipleValueState<VALUE, ERROR, ITEM_ERROR>
         > {
-  final MultiFormValue<VALUE, ERROR> proxy;
+  final MultiFormValue<VALUE, ERROR, ITEM_ERROR> proxy;
 
   MultiFormValueNotifier(String key, this.proxy)
     : super(key, proxy.initial ?? [], []) {
@@ -50,8 +53,8 @@ final class MultiFormValueNotifier<VALUE, ERROR>
   }
 
   @override
-  FormMultipleValueState<VALUE, ERROR> build() => logIt(
-    FormMultipleValueState<VALUE, ERROR>(
+  FormMultipleValueState<VALUE, ERROR, ITEM_ERROR> build() => logIt(
+    FormMultipleValueState<VALUE, ERROR, ITEM_ERROR>(
       isDirty: isDirty,
       isInitializing: isInitializing,
       isEnabled: proxy.isEnabled?.call(ref) ?? true,

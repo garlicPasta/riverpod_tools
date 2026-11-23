@@ -5,16 +5,27 @@ import 'package:riverpod_forms/src/models/value.dart';
 import 'package:riverpod_forms/src/providers/as_future_provider.dart';
 import 'package:riverpod_forms/src/providers/multi_form_value_notifier.dart';
 
-typedef MultiFormValueProviderArgs = (String, MultiFormValue<dynamic, dynamic>);
+typedef MultiFormValueProviderArgs = (
+  String,
+  MultiFormValue<dynamic, dynamic, dynamic>,
+);
 
-final class MultiFormValue<T, ERROR>
-    extends FormValue<List<T>, ERROR, FormMultipleValueState<T, ERROR>> {
+final class MultiFormValue<T, ERROR, ITEM_ERROR>
+    extends
+        FormValue<
+          List<T>,
+          ERROR,
+          FormMultipleValueState<T, ERROR, ITEM_ERROR>
+        > {
+  Validator<T, ItemError<T, ITEM_ERROR>>? itemValidator;
+
   MultiFormValue({
     super.initial,
     super.isEnabled,
     super.isVisible,
     super.validator,
     Value<List<T>>? options,
+    this.itemValidator,
   }) {
     this.options = switch (options) {
       SyncValue<List<T>>(:final value) => (ref) => AsyncValue.data(value),
@@ -34,16 +45,16 @@ final class MultiFormValue<T, ERROR>
   late Function(T value) removeValue;
   late Function() clear;
 
-  FormMultipleValueState<T, ERROR> watch(Ref ref) =>
-      ref.watch(_provider).as<T, ERROR>();
+  FormMultipleValueState<T, ERROR, ITEM_ERROR> watch(Ref ref) =>
+      ref.watch(_provider).as<T, ERROR, ITEM_ERROR>();
 
   void enableValidate(Ref ref) {
     ref.read(_provider.notifier).validate();
   }
 
   NotifierProvider<
-    MultiFormValueNotifier,
-    FormMultipleValueState<dynamic, dynamic>
+    MultiFormValueNotifier<dynamic, dynamic, dynamic>,
+    FormMultipleValueState<dynamic, dynamic, dynamic>
   >
   get _provider => formMulipleValueProvider((id, this));
 
@@ -51,14 +62,15 @@ final class MultiFormValue<T, ERROR>
       ref.watch(formMulipleValueProvider((id, this)).select((s) => s.value))
           as List<T>?;
 
-  FormMultipleValueState<T, ERROR> watchW(WidgetRef ref) =>
-      ref.watch(formMulipleValueProvider((id, this))).as<T, ERROR>();
+  FormMultipleValueState<T, ERROR, ITEM_ERROR> watchW(WidgetRef ref) => ref
+      .watch(formMulipleValueProvider((id, this)))
+      .as<T, ERROR, ITEM_ERROR>();
 
-  FormMultipleValueState<T, ERROR> read(Ref ref) =>
-      ref.read(formMulipleValueProvider((id, this))).as<T, ERROR>();
+  FormMultipleValueState<T, ERROR, ITEM_ERROR> read(Ref ref) =>
+      ref.read(formMulipleValueProvider((id, this))).as<T, ERROR, ITEM_ERROR>();
 
-  FormMultipleValueState<T, ERROR> readW(WidgetRef ref) =>
-      ref.read(formMulipleValueProvider((id, this))).as<T, ERROR>();
+  FormMultipleValueState<T, ERROR, ITEM_ERROR> readW(WidgetRef ref) =>
+      ref.read(formMulipleValueProvider((id, this))).as<T, ERROR, ITEM_ERROR>();
 
   late final AsyncValue<List<T>> Function(Ref ref) options;
 

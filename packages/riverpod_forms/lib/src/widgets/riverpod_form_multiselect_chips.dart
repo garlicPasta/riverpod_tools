@@ -3,7 +3,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:riverpod_forms/riverpod_forms.dart';
 
 class RiverpodFormMultiselectChips<T, E> extends StatelessWidget {
-  final MultiFormValue<T, E> valueProxy;
+  final MultiFormValue<T, E, dynamic> valueProxy;
   final ErrorMapper<E>? errorMapping;
   final String Function(T)? labelMapping;
 
@@ -15,18 +15,20 @@ class RiverpodFormMultiselectChips<T, E> extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) => RiverpodFormMultiFieldBuilder<T, E>(
-    valueProxy: valueProxy,
-    builder: (context, state, setter) => _RiverpodChoiceChips<T, E>(
-      errorMapping: errorMapping,
-      labelMapping: labelMapping!,
-      state: state,
-      setter: setter,
-    ),
-  );
+  Widget build(BuildContext context) =>
+      RiverpodFormMultiFieldBuilder<T, E, dynamic>(
+        valueProxy: valueProxy,
+        builder: (context, state, setter) => _RiverpodChoiceChips<T, E>(
+          errorMapping: errorMapping,
+          labelMapping: labelMapping!,
+          state: state,
+          setter: setter,
+        ),
+      );
 }
 
-class _RiverpodChoiceChips<T, E> extends RiverpodFormMultiFieldHandler<T, E> {
+class _RiverpodChoiceChips<T, E>
+    extends RiverpodFormMultiFieldHandler<T, E, dynamic> {
   final ErrorMapper<E>? errorMapping;
   final String Function(T) labelMapping;
 

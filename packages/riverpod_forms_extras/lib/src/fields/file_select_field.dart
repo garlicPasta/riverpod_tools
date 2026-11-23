@@ -4,14 +4,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_forms/riverpod_forms.dart';
 import 'package:riverpod_forms_extras/src/models/picked_file.dart';
 
-typedef FilePickField<ERROR> = MultiFormValue<PickedFile, ERROR>;
+typedef FilePickField<ERROR, ITEM_ERROR> =
+    MultiFormValue<PickedFile, ERROR, ITEM_ERROR>;
 
-FilePickField<ERROR> makeFilePickField<ERROR>({
+FilePickField<ERROR, ITEM_ERROR> makeFilePickField<ERROR, ITEM_ERROR>({
   Validator<List<PickedFile>, ERROR>? validator,
   FutureOr<List<PickedFile>>? initialValue,
   bool Function(Ref ref)? isEnabled,
   bool Function(Ref ref)? isVisible,
-}) => MultiFormValue<PickedFile, ERROR>(
+}) => MultiFormValue<PickedFile, ERROR, ITEM_ERROR>(
   validator: validator,
   initial: initialValue,
   isEnabled: isEnabled,
