@@ -18,9 +18,9 @@ final class MultiFormValue<T, ERROR>
   }) {
     this.options = switch (options) {
       SyncValue<List<T>>(:final value) => (ref) => AsyncValue.data(value),
-      FutureValue<List<T>>(:final value) => (
-        ref,
-      ) => ref.watch(futureToAsyncDataProvider(value)) as AsyncValue<List<T>>,
+      FutureValue<List<T>>(:final value) => (ref) => ref.watch(
+        futureToAsyncDataProvider(EqualFuture(id, value)),
+      ) as AsyncValue<List<T>>,
       RiverpodValue<List<T>>(:final value) => value,
       null => (ref) => AsyncValue.data([]),
     };
@@ -45,20 +45,20 @@ final class MultiFormValue<T, ERROR>
     MultiFormValueNotifier,
     FormMultipleValuesState<dynamic, dynamic>
   >
-  get _provider => multiFormValueProvider((key, this));
+  get _provider => multiFormValueProvider((id, this));
 
   List<T>? watchValue(Ref ref) =>
-      ref.watch(multiFormValueProvider((key, this)).select((s) => s.value))
+      ref.watch(multiFormValueProvider((id, this)).select((s) => s.value))
           as List<T>?;
 
   FormMultipleValuesState<T, ERROR> watchW(WidgetRef ref) =>
-      ref.watch(multiFormValueProvider((key, this))).as<T, ERROR>();
+      ref.watch(multiFormValueProvider((id, this))).as<T, ERROR>();
 
   FormMultipleValuesState<T, ERROR> read(Ref ref) =>
-      ref.read(multiFormValueProvider((key, this))).as<T, ERROR>();
+      ref.read(multiFormValueProvider((id, this))).as<T, ERROR>();
 
   FormMultipleValuesState<T, ERROR> readW(WidgetRef ref) =>
-      ref.read(multiFormValueProvider((key, this))).as<T, ERROR>();
+      ref.read(multiFormValueProvider((id, this))).as<T, ERROR>();
 
   late final AsyncValue<List<T>> Function(Ref ref) options;
 

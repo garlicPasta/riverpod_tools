@@ -21,7 +21,7 @@ final class SingleFormValue<VALUE, ERROR>
 
   AsyncValue<List<VALUE>> Function(Ref ref, VALUE value)? getSuggestion;
 
-  (String, SingleFormValue<dynamic, dynamic>) get _params => (key, this);
+  (String, SingleFormValue<dynamic, dynamic>) get _params => (id, this);
 
   NotifierProvider<
     SingleFormValueNotifier,
@@ -44,7 +44,7 @@ final class SingleFormValue<VALUE, ERROR>
   final AsyncValue<List<VALUE>> Function(Ref ref)? values;
 
   @override
-  VALUE getValid(ValidFormSnapshot snapshot) => snapshot[key] as VALUE;
+  VALUE getValid(ValidFormSnapshot snapshot) => snapshot[id] as VALUE;
 
   @override
   void enableValidateW(WidgetRef ref) {

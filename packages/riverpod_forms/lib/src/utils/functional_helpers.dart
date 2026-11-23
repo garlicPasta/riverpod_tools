@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 @pragma("vm:prefer-inline")
 TResult? whenNull<TValue, TResult>(
   TValue? value, {
@@ -10,3 +12,9 @@ TResult notNullOr<TValue, TResult>(
   required TResult Function(TValue value) then,
   required TResult orElse,
 }) => (value == null) ? orElse : then(value);
+
+@pragma("vm:prefer-inline")
+T logIt<T>(T value) {
+  log(value.toString());
+  return value;
+}

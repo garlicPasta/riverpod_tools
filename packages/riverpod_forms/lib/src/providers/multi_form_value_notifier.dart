@@ -32,36 +32,37 @@ final class MultiFormValueNotifier<VALUE, ERROR>
       proxy.validateDynamic(ref, value);
 
   void addValue(VALUE v) {
-    value.add(v);
+    value = [...value, v];
     isDirty = true;
     ref.invalidateSelf();
   }
 
   void removeValue(VALUE v) {
-    value.remove(v);
+    value = value.where((e) => e != v).toList();
     isDirty = true;
     ref.invalidateSelf();
   }
 
   void clear() {
-    value.clear();
+    value = [];
     isDirty = true;
     ref.invalidateSelf();
   }
 
   @override
-  FormMultipleValuesState<VALUE, ERROR> build() =>
-      FormMultipleValuesState<VALUE, ERROR>(
-        isDirty: isDirty,
-        isInitializing: isInitializing,
-        isEnabled: proxy.isEnabled?.call(ref) ?? true,
-        isVisible: proxy.isVisible?.call(ref) ?? true,
-        error: validateField
-            ? ValidationState.fromAsyncValue<ERROR>(
-                _validateDynamic(ref, value).as<ERROR?>(),
-              )
-            : ValidationSuccess(),
-        value: value,
-        options: proxy.options.call(ref),
-      );
+  FormMultipleValuesState<VALUE, ERROR> build() => logIt(
+    FormMultipleValuesState<VALUE, ERROR>(
+      isDirty: isDirty,
+      isInitializing: isInitializing,
+      isEnabled: proxy.isEnabled?.call(ref) ?? true,
+      isVisible: proxy.isVisible?.call(ref) ?? true,
+      error: validateField
+          ? ValidationState.fromAsyncValue<ERROR>(
+              _validateDynamic(ref, value).as<ERROR?>(),
+            )
+          : ValidationSuccess(),
+      value: value,
+      options: proxy.options.call(ref),
+    ),
+  );
 }

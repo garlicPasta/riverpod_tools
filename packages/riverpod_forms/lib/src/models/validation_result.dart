@@ -1,6 +1,7 @@
+import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-sealed class ValidationState<ERROR> {
+sealed class ValidationState<ERROR> extends Equatable {
   static ValidationState<ERROR> fromAsyncValue<ERROR>(
     AsyncValue<ERROR?> asyncValue,
   ) => asyncValue.when(
@@ -31,6 +32,9 @@ sealed class ValidationState<ERROR> {
   };
 
   const ValidationState();
+
+  @override
+  List<Object?> get props => const [];
 }
 
 final class ValidationInProgress<ERROR> extends ValidationState<ERROR> {
@@ -42,9 +46,12 @@ final class ValidationSuccess<ERROR> extends ValidationState<ERROR> {
 }
 
 final class ValidationFailed<ERROR>(final ValidationError<ERROR> failure)
-    extends ValidationState<ERROR> {}
+    extends ValidationState<ERROR> {
+  @override
+  List<Object?> get props => [failure];
+}
 
-sealed class ValidationError<ERROR> {
+sealed class ValidationError<ERROR> extends Equatable {
   ValidationError<T> as<T>() => switch (this) {
     ValidationFailure<ERROR>(:final error) => ValidationFailure<T>(error as T),
     ValidationException<ERROR>(:final exception, :final stackTrace) =>
@@ -53,9 +60,15 @@ sealed class ValidationError<ERROR> {
 }
 
 final class ValidationFailure<ERROR>(final ERROR error)
-    extends ValidationError<ERROR> {}
+    extends ValidationError<ERROR> {
+  @override
+  List<Object?> get props => [error];
+}
 
 final class ValidationException<ERROR>(
   final Object exception,
   final StackTrace stackTrace,
-) extends ValidationError<ERROR> {}
+) extends ValidationError<ERROR> {
+  @override
+  List<Object?> get props => [exception, stackTrace];
+}

@@ -4,7 +4,6 @@ import 'package:riverpod_forms/riverpod_forms.dart';
 import 'package:riverpod_forms_extras/riverpod_forms_extras.dart';
 
 final titleField = makeTextField(validator: isRequired<String>());
-
 final periodField = makeDateRangeField(
   validator: isRequired<DateTimeRange>()
       .and(
@@ -18,8 +17,8 @@ final periodField = makeDateRangeField(
       .and(durationIsShorterThan(Duration(days: 7))),
 );
 
-final attachmentsField = makeFilePickField<IsRequired>(
-  validator: isRequired<List<PickedFile>>(),
+final attachmentsField = makeFilePickField(
+  validator: isRequired<List<PickedFile>>().and(filesSmallerThan(1024)),
 );
 
 final FormProvider<UploadForm> uploadFormProvider = makeFormProvider(
@@ -80,18 +79,24 @@ class UploadScreen extends ConsumerWidget {
               RiverpodFormTextField(
                 decoration: const InputDecoration(labelText: 'Title'),
                 valueProxy: state.model.title,
-                errorMapping: (_) => 'Title is required',
+                errorMapping: (_, IsRequired e) => 'Required',
               ),
               RiverpodFormDateRangePicker(
                 decoration: const InputDecoration(labelText: 'Period'),
                 valueProxy: state.model.period,
-                errorMapping: (e) => e.on(
+                errorMapping: (context, e) => e.on(
                   on0: (IsRequired e) => 'Is required',
                   on1: (DateRangeDoesNotContain e) => 'Doe not contain',
                   on2: (DurationLongerThan e) => 'Is too long',
                 ),
               ),
-              RiverpodFormFilePicker(field: state.model.attachments),
+              RiverpodFormFilePicker(
+                field: state.model.attachments,
+                errorMapping: (context, error) => error.on(
+                  on0: (IsRequired _) => 'Required',
+                  on1: (_) => 'File too big',
+                ),
+              ),
               FilledButton(
                 onPressed: () {
                   final result = state.model.validateThenGetResult(ref);

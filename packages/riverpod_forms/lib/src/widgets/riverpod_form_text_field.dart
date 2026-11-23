@@ -1,11 +1,9 @@
 import 'package:material_ui/material_ui.dart';
-import 'package:riverpod_forms/src/models/riverpod_form.dart';
-import 'package:riverpod_forms/src/models/validation_result.dart';
-import 'package:riverpod_forms/src/widgets/riverpod_form_field_builder.dart';
+import 'package:riverpod_forms/riverpod_forms.dart';
 
-class RiverpodFormTextField<E> extends StatelessWidget {
-  final SingleFormValue<String, E> valueProxy;
-  final String Function(E)? errorMapping;
+class RiverpodFormTextField<ERR> extends StatelessWidget {
+  final SingleFormValue<String, ERR> valueProxy;
+  final ErrorMapper<ERR>? errorMapping;
   final InputDecoration? decoration;
 
   const RiverpodFormTextField({
@@ -16,9 +14,9 @@ class RiverpodFormTextField<E> extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) => RiverpodFormFieldBuilder<String, E>(
+  Widget build(BuildContext context) => RiverpodFormFieldBuilder<String, ERR>(
     valueProxy: valueProxy,
-    builder: (context, state, setValue) => _RiverpodText<E>(
+    builder: (context, state, setValue) => _RiverpodText<ERR>(
       state: state,
       setValue: setValue,
       errorMapping: errorMapping,
@@ -28,7 +26,7 @@ class RiverpodFormTextField<E> extends StatelessWidget {
 }
 
 class _RiverpodText<E> extends RiverpodFormFieldHandler<String, E> {
-  final String Function(E)? errorMapping;
+  final ErrorMapper<E>? errorMapping;
   final InputDecoration? decoration;
 
   const _RiverpodText({
@@ -82,7 +80,7 @@ class _RiverpodTextState<E> extends State<_RiverpodText<E>> {
               ValidationSuccess<E>() => null,
               ValidationFailed<E>(:final failure) => switch (failure) {
                 ValidationFailure<E>(:final error) =>
-                  widget.errorMapping?.call(error) ?? '',
+                  widget.errorMapping?.call(context, error) ?? '',
                 ValidationException<E>() => 'Validation failed',
               },
               null => null,

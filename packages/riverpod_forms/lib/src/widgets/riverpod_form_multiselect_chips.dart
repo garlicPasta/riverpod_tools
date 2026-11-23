@@ -4,7 +4,7 @@ import 'package:riverpod_forms/riverpod_forms.dart';
 
 class RiverpodFormMultiselectChips<T, E> extends StatelessWidget {
   final MultiFormValue<T, E> valueProxy;
-  final String Function(E)? errorMapping;
+  final ErrorMapper<E>? errorMapping;
   final String Function(T)? labelMapping;
 
   const RiverpodFormMultiselectChips({
@@ -27,7 +27,7 @@ class RiverpodFormMultiselectChips<T, E> extends StatelessWidget {
 }
 
 class _RiverpodChoiceChips<T, E> extends RiverpodFormMultiFieldHandler<T, E> {
-  final String Function(E)? errorMapping;
+  final ErrorMapper<E>? errorMapping;
   final String Function(T) labelMapping;
 
   const _RiverpodChoiceChips({
@@ -92,7 +92,7 @@ class _RiverpodChoiceChipsState<T, E>
               ? Padding(
                   padding: const EdgeInsets.only(top: 8, left: 12, right: 12),
                   child: Text(
-                    widget.errorMapping?.call(value) ?? '',
+                    widget.errorMapping?.call(context, value) ?? '',
                     style:
                         Theme.of(context).inputDecorationTheme.errorStyle ??
                         TextStyle(color: Theme.of(context).colorScheme.error),

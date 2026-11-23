@@ -6,7 +6,7 @@ import 'package:riverpod_forms_extras/src/models/picked_file.dart';
 
 typedef FilePickField<ERROR> = MultiFormValue<PickedFile, ERROR>;
 
-MultiFormValue<PickedFile, ERROR> makeFilePickField<ERROR>({
+FilePickField<ERROR> makeFilePickField<ERROR>({
   Validator<List<PickedFile>, ERROR>? validator,
   FutureOr<List<PickedFile>>? initialValue,
   bool Function(Ref ref)? isEnabled,

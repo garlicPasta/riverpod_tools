@@ -22,7 +22,9 @@ RiverpodValidator<VALUE, IsNotEqual> isNotEqual<VALUE>(
 final class IsRequired {}
 
 SyncValidator<T, IsRequired> isRequired<T>() => .new((T? value) {
-  if (value == null || (value is String && value.isEmpty)) {
+  if (value == null ||
+      (value is String && value.isEmpty) ||
+      (value is Iterable && value.isEmpty)) {
     return IsRequired();
   }
   return null;

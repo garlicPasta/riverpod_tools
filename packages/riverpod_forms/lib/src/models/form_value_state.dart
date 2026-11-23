@@ -62,4 +62,8 @@ class FormMultipleValuesState<VALUE, ERROR>({
     value: value.cast<T>(),
     options: options.whenData((v) => v.cast<T>()),
   );
+
+  @override
+  String toString() =>
+      'FormMultipleValuesState($value) isDirty=$isDirty isEnabled=$isEnabled isVisible=$isVisible isInit=$isInitializing error=$error options=$options';
 }

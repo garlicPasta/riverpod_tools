@@ -116,13 +116,11 @@ class SignUpScreen extends ConsumerWidget {
                   hintText: 'Enter your email',
                 ),
                 valueProxy: state.model.email,
-                errorMapping: (error) => switch (error) {
-                  Validator3_0Failed(error: IsRequired _) =>
-                    'Email is required',
-                  Validator3_1Failed(error: RegexMismatch _) =>
-                    'Email format is invalid',
-                  Validator3_2Failed(error: bool _) => 'Email is already taken',
-                },
+                errorMapping: (context, error) => error.on(
+                  on0: (IsRequired _) => 'Email is required',
+                  on1: (RegexMismatch _) => 'Email format is invalid',
+                  on2: (bool _) => 'Email is already taken',
+                ),
               ),
               RiverpodFormTextField(
                 decoration: const InputDecoration(
@@ -130,11 +128,11 @@ class SignUpScreen extends ConsumerWidget {
                   hintText: 'Enter at least 6 characters',
                 ),
                 valueProxy: state.model.password,
-                errorMapping: (error) => switch (error) {
-                  Validator2_0Failed() => 'Password is required',
-                  Validator2_1Failed() =>
-                    'Password must have at least 6 characters',
-                },
+                errorMapping: (context, error) => error.on(
+                  on0: (IsRequired _) => 'Password is required',
+                  on1: (MinLength _) =>
+                      'Password must have at least 6 characters',
+                ),
               ),
               RiverpodFormTextField(
                 decoration: const InputDecoration(
@@ -142,30 +140,23 @@ class SignUpScreen extends ConsumerWidget {
                   hintText: 'Re-enter your password',
                 ),
                 valueProxy: state.model.confirmPassword,
-                errorMapping: (error) => switch (error) {
-                  Validator2_0Failed() => 'Password is required',
-                  Validator2_1Failed() => 'Passwords must match',
-                },
+                errorMapping: (context, error) => error.on(
+                  on0: (IsRequired _) => 'Password is required',
+                  on1: (IsEqual _) => 'Passwords must match',
+                ),
               ),
               RiverpodFormChoiceChips(
                 valueProxy: state.model.roles,
                 labelMapping: (role) => role.name,
-                errorMapping: (error) => 'Role is required',
+                errorMapping: (context, error) => 'Role is required',
               ),
               RiverpodFormMultiselectChips(
                 valueProxy: state.model.hobbies,
                 labelMapping: (hobby) => hobby,
-                errorMapping: (error) => switch (error) {
-                  Validator2_0Failed(error: IsRequired _) => '',
-                  Validator2_1Failed<
-                    List<String>,
-                    IsRequired,
-                    ListLengthLessThan
-                  >(
-                    :ListLengthLessThan error,
-                  ) =>
-                    '${error.size}',
-                },
+                errorMapping: (context, error) => error.on(
+                  on0: (IsRequired _) => '',
+                  on1: (ListLengthLessThan e) => '${e.size}',
+                ),
               ),
               FilledButton(
                 onPressed: state.isValid == true

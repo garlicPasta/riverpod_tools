@@ -2,21 +2,25 @@ import 'package:async_value_tools/async_value_tools.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_forms/riverpod_forms.dart';
 import 'package:riverpod_forms/src/providers/as_future_provider.dart';
+import 'package:uuid/uuid.dart';
 
 typedef ValueValidator<VALUE, ERROR> = AsyncValue<ERROR?> Function(
   Ref ref,
   VALUE? value,
 );
 
+Uuid _uuid = Uuid();
+
 sealed class Validator<T, ERROR> {
-  const Validator._();
+  final String id = _uuid.v4();
+  Validator._();
 
   static SyncValidator<T, ERROR> sync<T, ERROR>(
     ERROR? Function(T? value) validate,
   ) => SyncValidator<T, ERROR>(validate);
 
   static AsyncValidator<T, ERROR> async<T, ERROR>(
-    Future<ERROR?> Function(T value) validate,
+    Future<ERROR?> Function(T? value) validate,
   ) => AsyncValidator<T, ERROR>(validate);
 
   static RiverpodValidator<T, ERROR> riverpod<T, ERROR>(
@@ -29,7 +33,7 @@ sealed class Validator<T, ERROR> {
 final class SyncValidator<T, ERROR> extends Validator<T, ERROR> {
   final ERROR? Function(T? value) validate;
 
-  const SyncValidator(this.validate) : super._();
+  SyncValidator(this.validate) : super._();
 
   CombinedValidator2<T, ERROR, ERROR1> and<ERROR1>(Validator<T, ERROR1> v) =>
       CombinedValidator2(this, v);
@@ -40,9 +44,9 @@ final class SyncValidator<T, ERROR> extends Validator<T, ERROR> {
 }
 
 final class AsyncValidator<T, ERROR> extends Validator<T, ERROR> {
-  final Future<ERROR?> Function(T value) validate;
+  final Future<ERROR?> Function(T? value) validate;
 
-  const AsyncValidator(this.validate) : super._();
+  AsyncValidator(this.validate) : super._();
 
   CombinedValidator2<T, ERROR, ERROR1> and<ERROR1>(Validator<T, ERROR1> v) =>
       CombinedValidator2(this, v);
@@ -51,13 +55,19 @@ final class AsyncValidator<T, ERROR> extends Validator<T, ERROR> {
   ValueValidator<T, ERROR> get normalize =>
       (ref, value) => value == null
       ? AsyncData(null)
-      : ref.watch(futureToAsyncDataProvider(validate(value))).as<ERROR?>();
+      : ref
+            .watch(
+              futureToAsyncDataProvider(
+                EqualFuture(id, validate(value), value),
+              ),
+            )
+            .as<ERROR?>();
 }
 
 final class RiverpodValidator<T, ERROR> extends Validator<T, ERROR> {
   final AsyncValue<ERROR?> Function(Ref ref, T? value) validate;
 
-  const RiverpodValidator(this.validate) : super._();
+  RiverpodValidator(this.validate) : super._();
 
   CombinedValidator2<T, ERROR, ERROR1> and<ERROR1>(Validator<T, ERROR1> v) =>
       CombinedValidator2(this, v);
@@ -71,7 +81,7 @@ final class CombinedValidator2<T, E0, E1>
   final Validator<T, E0> v0;
   final Validator<T, E1> v1;
 
-  const CombinedValidator2(this.v0, this.v1) : super._();
+  CombinedValidator2(this.v0, this.v1) : super._();
 
   CombinedValidator3<T, E0, E1, E2> and<E2>(Validator<T, E2> v2) =>
       CombinedValidator3(v0, v1, v2);
@@ -101,7 +111,7 @@ final class CombinedValidator3<T, E0, E1, E2>
   final Validator<T, E1> v1;
   final Validator<T, E2> v2;
 
-  const CombinedValidator3(this.v0, this.v1, this.v2) : super._();
+  CombinedValidator3(this.v0, this.v1, this.v2) : super._();
 
   @override
   ValueValidator<T, CombinedValidatorResult3<T, E0, E1, E2>> get normalize =>

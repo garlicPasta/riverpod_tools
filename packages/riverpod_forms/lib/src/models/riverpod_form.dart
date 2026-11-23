@@ -20,7 +20,7 @@ abstract class RiverpodForm<RESULT> extends Iterable<FormValue> {
     var entries = this.map((FormValue value) {
       var s = value.readW(ref);
       if (s.isValid == true) {
-        return MapEntry(value.key, s.value);
+        return MapEntry(value.id, s.value);
       } else {
         return null;
       }

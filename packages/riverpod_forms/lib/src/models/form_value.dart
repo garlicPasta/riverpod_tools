@@ -29,7 +29,7 @@ abstract class FormValue<
   final FutureOr<VALUE>? initial;
 
   late Function(VALUE value) setValue;
-  final String key = _uuid.v4();
+  final String id = _uuid.v4();
 
   FormValueState<VALUE, ERROR> watch(Ref ref);
 
@@ -47,5 +47,5 @@ abstract class FormValue<
   AsyncValue<ERROR?> validateDynamic(Ref ref, dynamic val) =>
       validator?.normalize(ref, val) ?? AsyncValue.data(null);
 
-  VALUE getValid(ValidFormSnapshot snapshot) => snapshot[key] as VALUE;
+  VALUE getValid(ValidFormSnapshot snapshot) => snapshot[id] as VALUE;
 }

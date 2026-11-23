@@ -2,6 +2,8 @@ library riverpod_forms;
 
 export 'src/fields/date_range_field.dart';
 export 'src/fields/text_field.dart';
+export 'src/models/equal_iterable.dart';
+export 'src/models/error_mapper.dart';
 export 'src/models/form_multiple_value.dart';
 export 'src/models/form_value.dart';
 export 'src/models/riverpod_form.dart';

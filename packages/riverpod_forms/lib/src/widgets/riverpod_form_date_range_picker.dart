@@ -1,11 +1,12 @@
 import 'package:material_ui/material_ui.dart';
+import 'package:riverpod_forms/src/models/error_mapper.dart';
 import 'package:riverpod_forms/src/models/riverpod_form.dart';
 import 'package:riverpod_forms/src/models/validation_result.dart';
 import 'package:riverpod_forms/src/widgets/riverpod_form_field_builder.dart';
 
 class RiverpodFormDateRangePicker<E> extends StatelessWidget {
   final SingleFormValue<DateTimeRange, E> valueProxy;
-  final String Function(E)? errorMapping;
+  final ErrorMapper<E>? errorMapping;
   final InputDecoration? decoration;
   final DateTime? firstDate;
   final DateTime? lastDate;
@@ -40,7 +41,7 @@ class RiverpodFormDateRangePicker<E> extends StatelessWidget {
 }
 
 class _RiverpodDateRange<E> extends RiverpodFormFieldHandler<DateTimeRange, E> {
-  final String Function(E)? errorMapping;
+  final ErrorMapper<E>? errorMapping;
   final InputDecoration? decoration;
   final DateTime firstDate;
   final DateTime lastDate;
@@ -76,7 +77,7 @@ class _RiverpodDateRangeState<E> extends State<_RiverpodDateRange<E>> {
     return switch (widget.state.error) {
       ValidationFailed<E>(:final failure) => switch (failure) {
         ValidationFailure<E>(:final error) =>
-          widget.errorMapping?.call(error) ?? '',
+          widget.errorMapping?.call(context, error) ?? '',
         ValidationException<E>() => 'Validation failed',
       },
       _ => null,

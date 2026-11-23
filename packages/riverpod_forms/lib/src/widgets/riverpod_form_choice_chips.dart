@@ -1,12 +1,13 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:riverpod_forms/src/models/error_mapper.dart';
 import 'package:riverpod_forms/src/models/riverpod_form.dart';
 import 'package:riverpod_forms/src/utils/functional_helpers.dart';
 import 'package:riverpod_forms/src/widgets/riverpod_form_field_builder.dart';
 
 class RiverpodFormChoiceChips<VALUE, E> extends StatelessWidget {
   final SingleFormValue<VALUE, E> valueProxy;
-  final String Function(E)? errorMapping;
+  final ErrorMapper<E>? errorMapping;
   final String Function(VALUE)? labelMapping;
 
   const RiverpodFormChoiceChips({
@@ -30,7 +31,7 @@ class RiverpodFormChoiceChips<VALUE, E> extends StatelessWidget {
 
 class _RiverpodChoiceChips<VALUE, E>
     extends RiverpodFormFieldHandler<VALUE, E> {
-  final String Function(E)? errorMapping;
+  final ErrorMapper<E>? errorMapping;
   final String Function(VALUE) labelMapping;
 
   const _RiverpodChoiceChips({
@@ -82,7 +83,7 @@ class _RiverpodChoiceChipsState<VALUE, E>
               ? Padding(
                   padding: const EdgeInsets.only(top: 8, left: 12, right: 12),
                   child: Text(
-                    widget.errorMapping?.call(value) ?? '',
+                    widget.errorMapping?.call(context, value) ?? '',
                     style:
                         Theme.of(context).inputDecorationTheme.errorStyle ??
                         TextStyle(color: Theme.of(context).colorScheme.error),
