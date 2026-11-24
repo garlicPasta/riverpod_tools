@@ -7,12 +7,12 @@ abstract class FormValueState<VALUE, ERROR>({
   final bool isDirty = false,
   final bool isEnabled = true,
   final bool isVisible = true,
+  required final ValidationState<ERROR> error,
   final VALUE? value,
   final AsyncValue<VALUE?> initial = const AsyncValue.data(null),
-  final ValidationState<ERROR>? error,
 }) extends Equatable {
   bool get isInitializing => initial.isLoading;
-  bool? get isValid => error == null ? null : error is ValidationSuccess<ERROR>;
+  bool? get isValid => (error is ValidationSuccess<ERROR>);
 
   @override
   List<Object?> get props => [
@@ -39,7 +39,7 @@ class FormSingleValueState<VALUE, ERROR>({
     isDirty: isDirty,
     isEnabled: isEnabled,
     isVisible: isVisible,
-    error: error?.as<E>(),
+    error: error.as<E>(),
     value: value as T?,
     initial: initial.whenData((v) => v as T?),
     values: values?.whenData((v) => v.cast<T>()),
@@ -53,11 +53,11 @@ class FormSingleValueState<VALUE, ERROR>({
 
 class FormMultipleValueState<VALUE, ERROR, ITEM_ERROR>({
   required super.isDirty,
+  required super.error,
   super.isEnabled,
   super.isVisible,
   super.initial,
   final AsyncValue<List<VALUE>> options = const AsyncValue.data([]),
-  final ValidationState<ERROR> error = const ValidationSuccess(),
   final List<ValidationState<ItemError<VALUE, ITEM_ERROR>>> itemErrors =
       const [],
   final List<VALUE> value = const [],

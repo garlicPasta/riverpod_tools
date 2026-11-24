@@ -50,7 +50,6 @@ final class MultiFormValueNotifier<VALUE, ERROR, ITEM_ERROR>
 
   void _makeDirtyAndValidate() {
     isDirty = true;
-    validateField = true;
   }
 
   void addValue(VALUE v) {
@@ -82,22 +81,17 @@ final class MultiFormValueNotifier<VALUE, ERROR, ITEM_ERROR>
           .watch(ref)
           .whenData((v) => ListDelta.fromInitial(v ?? <VALUE>[], value))
           .value,
-      error: validateField
-          ? ValidationState.fromAsyncValue<ERROR>(
-              _validateDynamic(ref, value).as<ERROR?>(),
-            )
-          : ValidationSuccess(),
+      error: ValidationState.fromAsyncValue<ERROR>(
+        _validateDynamic(ref, value).as<ERROR?>(),
+      ),
       value: value,
-      itemErrors: validateField
-          ? _validateItemsDynamic(ref, value)
-                .map(
-                  (r) =>
-                      ValidationState.fromAsyncValue<
-                        ItemError<VALUE, ITEM_ERROR>
-                      >(r.as<ItemError<VALUE, ITEM_ERROR>?>()),
-                )
-                .toList()
-          : const [],
+      itemErrors: _validateItemsDynamic(ref, value)
+          .map(
+            (r) => ValidationState.fromAsyncValue<ItemError<VALUE, ITEM_ERROR>>(
+              r.as<ItemError<VALUE, ITEM_ERROR>?>(),
+            ),
+          )
+          .toList(),
       options: proxy.options.call(ref),
     ),
   );

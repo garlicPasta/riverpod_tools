@@ -25,19 +25,20 @@ final class SingleFormValueNotifier<VALUE, ERROR>
       proxy.watchValidationDynamic(ref, value);
 
   @override
-  FormSingleValueState<VALUE, ERROR> build() => logIt(
-    FormSingleValueState<VALUE, ERROR>(
-      initial: proxy.initial(ref),
-      isDirty: isDirty,
-      isEnabled: proxy.isEnabled?.call(ref) ?? true,
-      isVisible: proxy.isVisible?.call(ref) ?? true,
-      error: validateField
-          ? ValidationState.fromAsyncValue<ERROR>(
-              _validateDynamic(ref, value).as<ERROR?>(),
-            )
-          : null,
-      value: value,
-      values: proxy.values?.call(ref),
-    ),
-  );
+  FormSingleValueState<VALUE, ERROR> build() {
+    var v = value ?? proxy.initial(ref).value;
+    return logIt(
+      FormSingleValueState<VALUE, ERROR>(
+        initial: proxy.initial(ref),
+        isDirty: isDirty,
+        isEnabled: proxy.isEnabled?.call(ref) ?? true,
+        isVisible: proxy.isVisible?.call(ref) ?? true,
+        error: ValidationState.fromAsyncValue<ERROR>(
+          _validateDynamic(ref, v).as<ERROR?>(),
+        ),
+        value: v,
+        values: proxy.values?.call(ref),
+      ),
+    );
+  }
 }

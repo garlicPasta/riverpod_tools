@@ -6,7 +6,6 @@ abstract class FormValueNotifier<VALUE, ERROR, STATE> extends Notifier<STATE> {
   VALUE value;
   Value<VALUE?> initialValue;
   bool isDirty = false;
-  bool validateField = false;
   final AsyncDebouncer _debouncer = AsyncDebouncer(Duration(milliseconds: 80));
 
   FormValueNotifier({
@@ -17,7 +16,6 @@ abstract class FormValueNotifier<VALUE, ERROR, STATE> extends Notifier<STATE> {
 
   void markDirty() {
     isDirty = true;
-    validateField = true;
     ref.invalidateSelf();
   }
 
@@ -25,13 +23,11 @@ abstract class FormValueNotifier<VALUE, ERROR, STATE> extends Notifier<STATE> {
     _debouncer.run(() async {
       this.value = value;
       isDirty = true;
-      validateField = true;
       ref.invalidateSelf();
     });
   }
 
   void validate() {
-    validateField = true;
     ref.invalidateSelf();
   }
 }
