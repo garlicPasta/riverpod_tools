@@ -4,7 +4,7 @@ import 'package:riverpod_forms/riverpod_forms.dart';
 
 SingleFormValue<DateTimeRange, ERROR> makeDateRangeField<ERROR>({
   Validator<DateTimeRange, ERROR>? validator,
-  Value<DateTimeRange>? initialValue,
+  Value<DateTimeRange?> initialValue = const Value.sync(null),
   bool Function(Ref ref)? isEnabled,
   bool Function(Ref ref)? isVisible,
 }) => SingleFormValue<DateTimeRange, ERROR>(

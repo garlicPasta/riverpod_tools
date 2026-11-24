@@ -33,7 +33,7 @@ final class MultiFormValueNotifier<VALUE, ERROR, ITEM_ERROR>
         > {
   final MultiFormValue<VALUE, ERROR, ITEM_ERROR> proxy;
 
-  MultiFormValueNotifier(String key, this.proxy) : super(key, []) {
+  MultiFormValueNotifier(String key, this.proxy) : super(key: key, value: []) {
     proxy.setValue = setValue;
     proxy.addValue = addValue;
     proxy.removeValue = removeValue;
@@ -75,12 +75,12 @@ final class MultiFormValueNotifier<VALUE, ERROR, ITEM_ERROR>
   FormMultipleValueState<VALUE, ERROR, ITEM_ERROR> build() => logIt(
     FormMultipleValueState<VALUE, ERROR, ITEM_ERROR>(
       isDirty: isDirty,
-      initial: initialValue?.watch(ref),
+      initial: initialValue.watch(ref),
       isEnabled: proxy.isEnabled?.call(ref) ?? true,
       isVisible: proxy.isVisible?.call(ref) ?? true,
       delta: initialValue
-          ?.watch(ref)
-          .whenData((v) => ListDelta.fromInitial(v, value))
+          .watch(ref)
+          .whenData((v) => ListDelta.fromInitial(v ?? <VALUE>[], value))
           .value,
       error: validateField
           ? ValidationState.fromAsyncValue<ERROR>(

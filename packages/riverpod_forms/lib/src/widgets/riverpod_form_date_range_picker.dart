@@ -64,7 +64,7 @@ class _RiverpodDateRange<E> extends RiverpodFormFieldHandler<DateTimeRange, E> {
 
 class _RiverpodDateRangeState<E> extends State<_RiverpodDateRange<E>> {
   bool get _isEnabled =>
-      widget.state.isEnabled && !(widget.state.initial?.isLoading ?? false);
+      widget.state.isEnabled && !(widget.state.initial.isLoading);
 
   String _format(BuildContext context, DateTimeRange range) {
     final custom = widget.formatter;

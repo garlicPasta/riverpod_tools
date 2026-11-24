@@ -8,13 +8,21 @@ abstract class FormValueState<VALUE, ERROR>({
   final bool isEnabled = true,
   final bool isVisible = true,
   final VALUE? value,
-  final AsyncValue<VALUE>? initial,
+  final AsyncValue<VALUE?> initial = const AsyncValue.data(null),
   final ValidationState<ERROR>? error,
 }) extends Equatable {
-  bool get isInitializing => initial?.isLoading ?? false;
+  bool get isInitializing => initial.isLoading;
   bool? get isValid => error == null ? null : error is ValidationSuccess<ERROR>;
+
   @override
-  List<Object?> get props => [isDirty, isEnabled, isVisible, value, error];
+  List<Object?> get props => [
+    isDirty,
+    isEnabled,
+    isVisible,
+    value,
+    error,
+    initial,
+  ];
 }
 
 class FormSingleValueState<VALUE, ERROR>({
@@ -22,6 +30,7 @@ class FormSingleValueState<VALUE, ERROR>({
   super.isEnabled,
   super.isVisible,
   super.value,
+  super.initial,
   super.error = const ValidationSuccess(),
   final AsyncValue<List<VALUE>>? values,
   final AsyncValue<List<VALUE>>? suggestions,
@@ -32,13 +41,14 @@ class FormSingleValueState<VALUE, ERROR>({
     isVisible: isVisible,
     error: error?.as<E>(),
     value: value as T?,
+    initial: initial.whenData((v) => v as T?),
     values: values?.whenData((v) => v.cast<T>()),
     suggestions: suggestions?.whenData((v) => v.cast<T>()),
   );
 
   @override
   String toString() =>
-      'FormSingeValuesState($value) isDirty=$isDirty isEnabled=$isEnabled isVisible=$isVisible error=$error';
+      'FormSingeValuesState($value) isDirty=$isDirty isEnabled=$isEnabled isVisible=$isVisible error=$error initial=$initial';
 }
 
 class FormMultipleValueState<VALUE, ERROR, ITEM_ERROR>({
@@ -59,6 +69,7 @@ class FormMultipleValueState<VALUE, ERROR, ITEM_ERROR>({
         isEnabled: isEnabled,
         isVisible: isVisible,
         value: value.cast<VAL>(),
+        initial: initial.whenData((v) => v?.cast<VAL>()),
         error: error.as<ERR>(),
         itemErrors: itemErrors
             .map((e) => e.as<ItemError<VAL, ITEM_ERR>>())

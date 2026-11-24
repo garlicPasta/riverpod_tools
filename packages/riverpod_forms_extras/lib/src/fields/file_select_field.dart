@@ -8,7 +8,7 @@ typedef FilePickField<ERROR, ITEM_ERROR> =
 FilePickField<ERROR, ITEM_ERROR> makeFilePickField<ERROR, ITEM_ERROR>({
   Validator<List<PickedFile>, ERROR>? validator,
   Validator<PickedFile, ItemError<PickedFile, ITEM_ERROR>>? itemValidator,
-  Value<List<PickedFile>>? initialValue,
+  Value<List<PickedFile>?> initialValue = const Value.sync(null),
   bool Function(Ref ref)? isEnabled,
   bool Function(Ref ref)? isVisible,
 }) => MultiFormValue<PickedFile, ERROR, ITEM_ERROR>(

@@ -4,12 +4,16 @@ import 'package:riverpod_forms/riverpod_forms.dart';
 abstract class FormValueNotifier<VALUE, ERROR, STATE> extends Notifier<STATE> {
   final String key;
   VALUE value;
-  Value<VALUE>? initialValue;
+  Value<VALUE?> initialValue;
   bool isDirty = false;
   bool validateField = false;
   final AsyncDebouncer _debouncer = AsyncDebouncer(Duration(milliseconds: 80));
 
-  FormValueNotifier(this.key, this.value);
+  FormValueNotifier({
+    required this.key,
+    required this.value,
+    this.initialValue = const Value.sync(null),
+  });
 
   void markDirty() {
     isDirty = true;

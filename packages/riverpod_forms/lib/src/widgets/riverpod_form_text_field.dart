@@ -43,19 +43,24 @@ class _RiverpodText<E> extends RiverpodFormFieldHandler<String, E> {
 
 class _RiverpodTextState<E> extends State<_RiverpodText<E>> {
   late final TextEditingController controller = TextEditingController(
-    text: widget.state.value,
+    text: widget.state.initial.value ?? '',
   );
 
   @override
   void didUpdateWidget(covariant _RiverpodText<E> oldWidget) {
     super.didUpdateWidget(oldWidget);
+
     if (oldWidget.state.value != widget.state.value &&
         widget.state.value != null) {
       controller.value = TextEditingValue(
-        text: widget.state.value!,
+        text: widget.state.initial.value ?? '',
         selection: TextSelection.collapsed(offset: widget.state.value!.length),
         composing: TextRange.empty,
       );
+    }
+
+    if (oldWidget.state.initial.value != widget.state.initial.value) {
+      controller.text = widget.state.initial.value ?? '';
     }
   }
 
@@ -64,28 +69,31 @@ class _RiverpodTextState<E> extends State<_RiverpodText<E>> {
   );
 
   @override
-  Widget build(BuildContext context) => TextField(
-    enabled: widget.state.isEnabled && !widget.state.isInitializing,
-    controller: controller,
-    onChanged: widget.setValue,
-    decoration: (widget.decoration ?? InputDecoration()).copyWith(
-      suffix: switch (widget.state.error) {
-        ValidationInProgress<E>() => loader,
-        _ when widget.state.isInitializing => loader,
-        _ => null,
-      },
-      errorText: (widget.state.isDirty)
-          ? switch (widget.state.error) {
-              ValidationInProgress<E>() => null,
-              ValidationSuccess<E>() => null,
-              ValidationFailed<E>(:final failure) => switch (failure) {
-                ValidationFailure<E>(:final error) =>
-                  widget.errorMapping?.call(context, error) ?? '',
-                ValidationException<E>() => 'Validation failed',
-              },
-              null => null,
-            }
-          : null,
-    ),
-  );
+  Widget build(BuildContext context) {
+    print('[build] widget.state.toString()');
+    return TextField(
+      enabled: widget.state.isEnabled && !widget.state.isInitializing,
+      controller: controller,
+      onChanged: widget.setValue,
+      decoration: (widget.decoration ?? InputDecoration()).copyWith(
+        suffix: switch (widget.state.error) {
+          ValidationInProgress<E>() => loader,
+          _ when widget.state.isInitializing => loader,
+          _ => null,
+        },
+        errorText: (widget.state.isDirty)
+            ? switch (widget.state.error) {
+                ValidationInProgress<E>() => null,
+                ValidationSuccess<E>() => null,
+                ValidationFailed<E>(:final failure) => switch (failure) {
+                  ValidationFailure<E>(:final error) =>
+                    widget.errorMapping?.call(context, error) ?? '',
+                  ValidationException<E>() => 'Validation failed',
+                },
+                null => null,
+              }
+            : null,
+      ),
+    );
+  }
 }

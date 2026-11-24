@@ -3,7 +3,7 @@ import 'package:riverpod_forms/riverpod_forms.dart';
 
 SingleFormValue<String, ERROR> makeTextField<ERROR>({
   Validator<String, ERROR>? validator,
-  Value<String>? initialValue,
+  Value<String?> initialValue = const Value.sync(null),
   bool Function(Ref ref)? isEnabled,
   bool Function(Ref ref)? isVisible,
 }) => SingleFormValue<String, ERROR>(
