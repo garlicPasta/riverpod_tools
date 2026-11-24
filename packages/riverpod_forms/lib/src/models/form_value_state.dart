@@ -1,30 +1,24 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_forms/riverpod_forms.dart';
+import 'package:riverpod_forms/src/providers/multi_form_value_notifier.dart';
 
 abstract class FormValueState<VALUE, ERROR>({
   final bool isDirty = false,
   final bool isEnabled = true,
   final bool isVisible = true,
-  required final bool isInitializing,
   final VALUE? value,
+  final AsyncValue<VALUE>? initial,
   final ValidationState<ERROR>? error,
 }) extends Equatable {
+  bool get isInitializing => initial?.isLoading ?? false;
   bool? get isValid => error == null ? null : error is ValidationSuccess<ERROR>;
   @override
-  List<Object?> get props => [
-    isDirty,
-    isEnabled,
-    isVisible,
-    isInitializing,
-    value,
-    error,
-  ];
+  List<Object?> get props => [isDirty, isEnabled, isVisible, value, error];
 }
 
 class FormSingleValueState<VALUE, ERROR>({
   required super.isDirty,
-  required super.isInitializing,
   super.isEnabled,
   super.isVisible,
   super.value,
@@ -40,31 +34,30 @@ class FormSingleValueState<VALUE, ERROR>({
     value: value as T?,
     values: values?.whenData((v) => v.cast<T>()),
     suggestions: suggestions?.whenData((v) => v.cast<T>()),
-    isInitializing: isInitializing,
   );
 
   @override
   String toString() =>
-      'FormSingeValuesState($value) isDirty=$isDirty isEnabled=$isEnabled isVisible=$isVisible isInit=$isInitializing error=$error';
+      'FormSingeValuesState($value) isDirty=$isDirty isEnabled=$isEnabled isVisible=$isVisible error=$error';
 }
 
 class FormMultipleValueState<VALUE, ERROR, ITEM_ERROR>({
   required super.isDirty,
-  required super.isInitializing,
   super.isEnabled,
   super.isVisible,
+  super.initial,
   final AsyncValue<List<VALUE>> options = const AsyncValue.data([]),
   final ValidationState<ERROR> error = const ValidationSuccess(),
   final List<ValidationState<ItemError<VALUE, ITEM_ERROR>>> itemErrors =
       const [],
   final List<VALUE> value = const [],
+  final ListDelta<VALUE>? delta,
 }) extends FormValueState<List<VALUE>, ERROR> {
   FormMultipleValueState<VAL, ERR, ITEM_ERR> as<VAL, ERR, ITEM_ERR>() =>
       FormMultipleValueState<VAL, ERR, ITEM_ERR>(
         isDirty: isDirty,
         isEnabled: isEnabled,
         isVisible: isVisible,
-        isInitializing: isInitializing,
         value: value.cast<VAL>(),
         error: error.as<ERR>(),
         itemErrors: itemErrors
@@ -78,5 +71,5 @@ class FormMultipleValueState<VALUE, ERROR, ITEM_ERROR>({
 
   @override
   String toString() =>
-      'FormMultipleValuesState($value) isDirty=$isDirty isEnabled=$isEnabled isVisible=$isVisible isInit=$isInitializing error=$error itemErrors=${itemErrors.isEmpty ? 'none' : itemErrors.join(',')} options=$options';
+      'FormMultipleValuesState($value) isDirty=$isDirty isEnabled=$isEnabled isVisible=$isVisible error=$error itemErrors=${itemErrors.isEmpty ? 'none' : itemErrors.join(',')} options=$options';
 }

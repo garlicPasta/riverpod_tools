@@ -16,7 +16,7 @@ dependencies:
   collection: ^1.19.1
   flutter_riverpod: ">=3.3.0 <3.5.0"
   async: ^2.13.1
-  equatable: ">=1.0.0-pre.1 <=4.0.0"
+  equatable: ">=2.0.0 <=4.0.0"
   material_ui: any
   async_value_tools:
     path: ../async_value_tools

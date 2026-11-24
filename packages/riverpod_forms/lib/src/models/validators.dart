@@ -27,7 +27,7 @@ sealed class Validator<T, ERROR> {
     AsyncValue<ERROR?> Function(Ref ref, T? value) validate,
   ) => RiverpodValidator<T, ERROR>(validate);
 
-  ValueValidator<T, ERROR> get normalize;
+  ValueValidator<T, ERROR> get watch;
 }
 
 final class SyncValidator<T, ERROR> extends Validator<T, ERROR> {
@@ -39,7 +39,7 @@ final class SyncValidator<T, ERROR> extends Validator<T, ERROR> {
       CombinedValidator2(this, v);
 
   @override
-  ValueValidator<T, ERROR> get normalize =>
+  ValueValidator<T, ERROR> get watch =>
       (_, val) => AsyncData<ERROR?>(validate(val));
 }
 
@@ -52,13 +52,13 @@ final class AsyncValidator<T, ERROR> extends Validator<T, ERROR> {
       CombinedValidator2(this, v);
 
   @override
-  ValueValidator<T, ERROR> get normalize =>
+  ValueValidator<T, ERROR> get watch =>
       (ref, value) => value == null
       ? AsyncData(null)
       : ref
             .watch(
               futureToAsyncDataProvider(
-                EqualFuture(id, validate(value), value),
+                EqualFuture(validate(value), id: id, idObject: value),
               ),
             )
             .as<ERROR?>();
@@ -73,7 +73,7 @@ final class RiverpodValidator<T, ERROR> extends Validator<T, ERROR> {
       CombinedValidator2(this, v);
 
   @override
-  ValueValidator<T, ERROR> get normalize => validate;
+  ValueValidator<T, ERROR> get watch => validate;
 }
 
 final class CombinedValidator2<T, E0, E1>
@@ -87,9 +87,9 @@ final class CombinedValidator2<T, E0, E1>
       CombinedValidator3(v0, v1, v2);
 
   @override
-  ValueValidator<T, CombinedValidatorResult2<T, E0, E1>> get normalize =>
+  ValueValidator<T, CombinedValidatorResult2<T, E0, E1>> get watch =>
       (ref, value) => v0
-          .normalize(ref, value)
+          .watch(ref, value)
           .flatMap(
             (v) => notNullOr(
               v,
@@ -97,7 +97,7 @@ final class CombinedValidator2<T, E0, E1>
                 Validator2_0Failed<T, E0, E1>(v),
               ),
               orElse: v1
-                  .normalize(ref, value)
+                  .watch(ref, value)
                   .whenData(
                     (v) => notNull(v, then: Validator2_1Failed<T, E0, E1>.new),
                   ),
@@ -114,9 +114,9 @@ final class CombinedValidator3<T, E0, E1, E2>
   CombinedValidator3(this.v0, this.v1, this.v2) : super._();
 
   @override
-  ValueValidator<T, CombinedValidatorResult3<T, E0, E1, E2>> get normalize =>
+  ValueValidator<T, CombinedValidatorResult3<T, E0, E1, E2>> get watch =>
       (ref, value) => v0
-          .normalize(ref, value)
+          .watch(ref, value)
           .flatMap(
             (v) =>
                 notNull(
@@ -127,7 +127,7 @@ final class CombinedValidator3<T, E0, E1, E2>
                       ),
                 ) ??
                 CombinedValidator2<T, E1, E2>(v1, v2)
-                    .normalize(ref, value)
+                    .watch(ref, value)
                     .whenData(
                       (v12Result) => switch (v12Result) {
                         Validator2_0Failed<T, E1, E2>(:final error) =>

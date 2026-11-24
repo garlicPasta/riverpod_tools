@@ -1,14 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_forms/riverpod_forms.dart';
 import 'package:riverpod_forms/src/models/form_value_state.dart';
-import 'package:riverpod_forms/src/models/value.dart';
-import 'package:riverpod_forms/src/providers/as_future_provider.dart';
 import 'package:riverpod_forms/src/providers/multi_form_value_notifier.dart';
 
-typedef MultiFormValueProviderArgs = (
-  String,
-  MultiFormValue<dynamic, dynamic, dynamic>,
-);
+typedef MultiFormValueProviderArgs = (String, MultiFormValue);
 
 final class MultiFormValue<T, ERROR, ITEM_ERROR>
     extends
@@ -27,19 +22,12 @@ final class MultiFormValue<T, ERROR, ITEM_ERROR>
     Value<List<T>>? options,
     this.itemValidator,
   }) {
-    this.options = switch (options) {
-      SyncValue<List<T>>(:final value) => (ref) => AsyncValue.data(value),
-      FutureValue<List<T>>(:final value) => (ref) => ref.watch(
-        futureToAsyncDataProvider(EqualFuture(id, value)),
-      ) as AsyncValue<List<T>>,
-      RiverpodValue<List<T>>(:final value) => value,
-      null => (ref) => AsyncValue.data([]),
-    };
+    this.options = options?.watch ?? (ref) => AsyncValue.data([]);
   }
 
   @override
-  AsyncValue<ERROR?> validateDynamic(Ref ref, dynamic val) =>
-      super.validateDynamic(ref, val is List ? val.cast<T>() : val);
+  AsyncValue<ERROR?> watchValidationDynamic(Ref ref, dynamic val) =>
+      super.watchValidationDynamic(ref, val is List ? val.cast<T>() : val);
 
   List<AsyncValue<ItemError<T, ITEM_ERROR>?>> validateItemsDynamic(
     Ref ref,
@@ -49,7 +37,7 @@ final class MultiFormValue<T, ERROR, ITEM_ERROR>
     if (validator == null) {
       return [];
     }
-    final normalizedValidator = validator.normalize;
+    final normalizedValidator = validator.watch;
     return val.map((v) => normalizedValidator(ref, v)).toList();
   }
 

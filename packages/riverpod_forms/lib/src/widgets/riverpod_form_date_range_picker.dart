@@ -1,3 +1,4 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:riverpod_forms/src/models/error_mapper.dart';
 import 'package:riverpod_forms/src/models/riverpod_form.dart';
@@ -62,7 +63,8 @@ class _RiverpodDateRange<E> extends RiverpodFormFieldHandler<DateTimeRange, E> {
 }
 
 class _RiverpodDateRangeState<E> extends State<_RiverpodDateRange<E>> {
-  bool get _isEnabled => widget.state.isEnabled && !widget.state.isInitializing;
+  bool get _isEnabled =>
+      widget.state.isEnabled && !(widget.state.initial?.isLoading ?? false);
 
   String _format(BuildContext context, DateTimeRange range) {
     final custom = widget.formatter;

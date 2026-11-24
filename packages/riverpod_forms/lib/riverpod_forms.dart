@@ -10,6 +10,7 @@ export 'src/models/multiple_value_error.dart';
 export 'src/models/riverpod_form.dart';
 export 'src/models/validation_result.dart';
 export 'src/models/validators.dart';
+export 'src/models/value.dart';
 export 'src/providers/form_notifier.dart';
 export 'src/typedefs.dart';
 export 'src/utils/async_debouncer.dart';

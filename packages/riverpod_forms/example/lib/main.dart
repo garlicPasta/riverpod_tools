@@ -10,7 +10,9 @@ final checkIfEmailIsTaken = FutureProvider.family<bool, String>(
 );
 
 final emailField = makeTextField(
-  initialValue: Future.delayed(Duration(seconds: 1), () => 'alice@example.de'),
+  initialValue: Value.future(
+    Future.delayed(Duration(seconds: 1), () => 'alice@example.de'),
+  ),
   validator: isRequired<String>()
       .and(isEmail())
       .and(

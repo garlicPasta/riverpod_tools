@@ -8,7 +8,9 @@ class PickedFile extends Equatable {
 
   Future<int?> size() async => file?.length();
 
-  PickedFile.platform(this.file) : name = file?.name ?? '', path = file?.path ?? '';
+  PickedFile.platform(this.file)
+    : name = file?.name ?? '',
+      path = file?.path ?? '';
   PickedFile.placeholder(this.name) : file = null, path = '';
 
   @override

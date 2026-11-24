@@ -6,13 +6,23 @@ import 'package:riverpod_forms/src/providers/form_value_notifier.dart';
 
 final formMulipleValueProvider =
     NotifierProvider.family<
-      MultiFormValueNotifier<dynamic, dynamic, dynamic>,
-      FormMultipleValueState<dynamic, dynamic, dynamic>,
+      MultiFormValueNotifier,
+      FormMultipleValueState,
       MultiFormValueProviderArgs
-    >(
-      (args) =>
-          MultiFormValueNotifier<dynamic, dynamic, dynamic>(args.$1, args.$2),
-    );
+    >((args) => MultiFormValueNotifier(args.$1, args.$2));
+
+class ListDelta<VALUE>(
+  final List<VALUE> added,
+  final List<VALUE> removed,
+  final List<VALUE> unchanged,
+) {
+  ListDelta.fromInitial(List<VALUE> initial, List<VALUE> current)
+    : this(
+        current.where((e) => !initial.contains(e)).toList(),
+        initial.where((e) => !current.contains(e)).toList(),
+        current.where(initial.contains).toList(),
+      );
+}
 
 final class MultiFormValueNotifier<VALUE, ERROR, ITEM_ERROR>
     extends
@@ -23,8 +33,7 @@ final class MultiFormValueNotifier<VALUE, ERROR, ITEM_ERROR>
         > {
   final MultiFormValue<VALUE, ERROR, ITEM_ERROR> proxy;
 
-  MultiFormValueNotifier(String key, this.proxy)
-    : super(key, proxy.initial ?? [], []) {
+  MultiFormValueNotifier(String key, this.proxy) : super(key, []) {
     proxy.setValue = setValue;
     proxy.addValue = addValue;
     proxy.removeValue = removeValue;
@@ -32,31 +41,33 @@ final class MultiFormValueNotifier<VALUE, ERROR, ITEM_ERROR>
   }
 
   AsyncValue<dynamic> _validateDynamic(Ref ref, dynamic value) =>
-      proxy.validateDynamic(ref, value);
+      proxy.watchValidationDynamic(ref, value);
 
   List<AsyncValue<dynamic>> _validateItemsDynamic(
     Ref ref,
     List<dynamic> value,
   ) => proxy.validateItemsDynamic(ref, value);
 
-  void addValue(VALUE v) {
-    value = [...value, v];
+  void _makeDirtyAndValidate() {
     isDirty = true;
     validateField = true;
+  }
+
+  void addValue(VALUE v) {
+    value = [...value, v];
+    _makeDirtyAndValidate();
     ref.invalidateSelf();
   }
 
   void removeValue(VALUE v) {
     value = value.where((e) => e != v).toList();
-    isDirty = true;
-    validateField = true;
+    _makeDirtyAndValidate();
     ref.invalidateSelf();
   }
 
   void clear() {
     value = [];
-    isDirty = true;
-    validateField = true;
+    _makeDirtyAndValidate();
     ref.invalidateSelf();
   }
 
@@ -64,9 +75,13 @@ final class MultiFormValueNotifier<VALUE, ERROR, ITEM_ERROR>
   FormMultipleValueState<VALUE, ERROR, ITEM_ERROR> build() => logIt(
     FormMultipleValueState<VALUE, ERROR, ITEM_ERROR>(
       isDirty: isDirty,
-      isInitializing: isInitializing,
+      initial: initialValue?.watch(ref),
       isEnabled: proxy.isEnabled?.call(ref) ?? true,
       isVisible: proxy.isVisible?.call(ref) ?? true,
+      delta: initialValue
+          ?.watch(ref)
+          .whenData((v) => ListDelta.fromInitial(v, value))
+          .value,
       error: validateField
           ? ValidationState.fromAsyncValue<ERROR>(
               _validateDynamic(ref, value).as<ERROR?>(),
